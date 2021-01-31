@@ -500,6 +500,10 @@ class Walker3DStepperEnv(EnvBase):
         super().__init__(Walker3D, render)
         self.robot.set_base_pose(pose="running_start")
 
+        self.robot.body_xyz = self.robot.robot_body.get_pose()[:3]
+        
+        self.robot.body_rpy = pybullet.getEulerFromQuaternion(self.robot.robot_body.get_orientation())
+
         self.electricity_cost = 4.5
         self.stall_torque_cost = 0.225
         self.joints_at_limit_cost = 0.1
@@ -548,10 +552,11 @@ class Walker3DStepperEnv(EnvBase):
 
         # x, y, z, phi, x_tilt, y_tilt
         self.terrain_info = np.zeros((self.n_steps, 6))
+        self.terrain_map = self.get_terrain_map()
 
         # (2 targets) * (x, y, z, x_tilt, y_tilt)
         high = np.inf * np.ones(
-            self.robot.observation_space.shape[0] + self.lookahead * 5
+            self.robot.observation_space.shape[0] + self.terrain_map.flatten().shape[0]
         )
         self.observation_space = gym.spaces.Box(-high, high, dtype=np.float32)
         self.action_space = self.robot.action_space
@@ -599,7 +604,7 @@ class Walker3DStepperEnv(EnvBase):
         self.yaw_pitch_prob *= 0
         self.yaw_pitch_prob[window, window] = prob
         self.yaw_pitch_prob[prev_window, prev_window] = 0
-        print(np.round(self.yaw_pitch_prob, 2))
+        #print(np.round(self.yaw_pitch_prob, 2))
 
     def update_specialist(self, specialist):
         self.specialist = min(specialist, 5)
