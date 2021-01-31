@@ -38,7 +38,7 @@ To start a new training experiment named `test_experiment` for the MikeStepper e
 
 ```bash
 ./scripts/local_run_playground_train.sh test_experiment \
-    env_name='mocca_envs:MikeStepperEnv-v0'
+    env_name='mocca_envs:Walker3DStepperEnv-v0'
 
 # Train with curriculum (see plaground/train.py for arguments)
 ./scripts/local_run_playground_train.sh  curriculum_experiment \

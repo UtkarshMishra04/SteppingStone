@@ -34,7 +34,7 @@ import gym
 
 @ex.config
 def configs():
-    env_name = "CassieStepper-v1"
+    env_name = "Walker3DStepperEnv-v0"
 
     # Auxiliary configurations
     num_frames = 20e7
@@ -57,7 +57,7 @@ def configs():
 
     # Sampling parameters
     episode_steps = 40000
-    num_processes = 100  # multiprocessing.cpu_count()
+    num_processes = multiprocessing.cpu_count()
     num_steps = episode_steps // num_processes
     mini_batch_size = 1024
     num_mini_batch = episode_steps // mini_batch_size
