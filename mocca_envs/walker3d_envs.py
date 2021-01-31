@@ -1,5 +1,5 @@
 import os
-
+import math
 current_dir = os.path.dirname(os.path.realpath(__file__))
 
 import gym
@@ -917,7 +917,9 @@ class Walker3DStepperEnv(EnvBase):
         # Order is important because walk_target is set up above
         self.calc_potential()
 
-        state = np.concatenate((self.robot_state, self.targets.flatten()))
+        self.terrain_map = self.get_terrain_map()
+
+        state = np.concatenate((self.robot_state, self.terrain_map.flatten()))
         height = self.robot.body_xyz[2] - np.min(self.robot.feet_xyz[:, 2])
         state[0] = height
         # import time; time.sleep(5)
@@ -952,7 +954,9 @@ class Walker3DStepperEnv(EnvBase):
         reward += self.step_bonus + self.target_bonus - self.speed_penalty
         reward += self.tall_bonus - self.posture_penalty - self.joints_penalty
 
-        state = np.concatenate((self.robot_state, self.targets.flatten()))
+        self.terrain_map = self.get_terrain_map()
+
+        state = np.concatenate((self.robot_state, self.terrain_map.flatten()))
 
         if self.is_render:
             self._handle_keyboard()
@@ -964,6 +968,38 @@ class Walker3DStepperEnv(EnvBase):
         # print(height)
 
         return state, reward, self.done, {}
+
+    def get_terrain_map(self):
+
+        theta = self.robot.body_rpy[1]
+        pos = self.robot.body_xyz
+
+        forward_vec = np.array([math.cos(theta),math.sin(theta),0])
+        forward_vec = 1.5*forward_vec/np.linalg.norm(forward_vec)
+
+        
+        rayheightfield = []
+
+        for vari in range(10):
+
+            point = np.array(pos)+(vari/9)*forward_vec
+            jvec = np.array([-math.sin(theta),math.cos(theta),0])
+            jvec = jvec/np.linalg.norm(jvec)
+            pointj1 = point - jvec
+            pointj2 = point + jvec
+            rowheightfield = []
+            for varj in range(10):
+                raypoint = pointj1 + varj*(pointj2-pointj1)/9
+                rayresult = self._p.rayTest([raypoint[0],raypoint[1],-pos[2]*2],[raypoint[0],raypoint[1],pos[2]*2])
+                zray = -100
+                for rayp in rayresult:
+                    if rayp[3][2] > zray and rayp[0]!=self.robot:
+                        zray = rayp[3][2] - pos[2]
+                rowheightfield.append(zray)
+            rayheightfield.append(np.array(rowheightfield))
+        rayheightfield = np.array(rayheightfield)
+
+        return rayheightfield
 
     def create_target(self):
         # Need this to create target in render mode, called by EnvBase
@@ -1029,7 +1065,7 @@ class Walker3DStepperEnv(EnvBase):
 
         self.foot_dist_to_target = np.array([0.0, 0.0])
 
-        p_xyz = self.terrain_info[self.next_step_index, [0, 1, 2]]
+        p_xyz = [7.0, 0.0, 0.0] #self.terrain_info[self.next_step_index, [0, 1, 2]]
         self.target_reached = False
         for i, f in enumerate(self.robot.feet):
             self.robot.feet_xyz[i] = f.pose().xyz()
@@ -1100,6 +1136,8 @@ class Walker3DStepperEnv(EnvBase):
         # use next step to calculate next k steps
         self.targets = self.delta_to_k_targets(k=self.lookahead)
 
+        self.terrain_map = self.get_terrain_map()
+
         self.update_terrain = (cur_step_index != self.next_step_index)
 
         if cur_step_index != self.next_step_index:
@@ -1115,7 +1153,7 @@ class Walker3DStepperEnv(EnvBase):
                 (targets, np.repeat(targets[[-1]], k - len(targets), axis=0))
             )
 
-        self.walk_target = targets[[1], 0:3].mean(axis=0)
+        self.walk_target = [7.0, 0.0, 1.32] #targets[[1], 0:3].mean(axis=0)
 
         deltas = targets[:, 0:3] - self.robot.body_xyz
         target_thetas = np.arctan2(deltas[:, 1], deltas[:, 0])
@@ -1154,6 +1192,8 @@ class Walker3DStepperEnv(EnvBase):
         quaternion = self._p.getQuaternionFromEuler([x_tilt, y_tilt, phi])
         self.steps[body_index].set_position(pos=pos, quat=quaternion)
         self.targets = self.delta_to_k_targets(k=self.lookahead)
+
+        self.terrain_map = self.get_terrain_map()
 
         # make phantom
         # if self.make_phantoms_yes and self.next_step_index % 2 == 0:
