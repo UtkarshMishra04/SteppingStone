@@ -16,7 +16,7 @@ class VSphere:
         pos=list(pos)
         pos[2]=-20
         pos=tuple(pos)
-        rgba = (219 / 255, 72 / 255, 72 / 255, 0.0) if rgba is None else rgba
+        rgba = (219 / 255, 72 / 255, 72 / 255, 1.0) if rgba is None else rgba
 
         shape = self._p.createVisualShape(
             self._p.GEOM_SPHERE,

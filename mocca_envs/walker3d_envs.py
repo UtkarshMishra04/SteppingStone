@@ -554,6 +554,9 @@ class Walker3DStepperEnv(EnvBase):
         self.terrain_info = np.zeros((self.n_steps, 6))
         self.terrain_map = self.get_terrain_map()
 
+        self.standing_penalty = 0.
+        self.prev_standing_feet = self.robot.feet_xyz
+
         # (2 targets) * (x, y, z, x_tilt, y_tilt)
         high = np.inf * np.ones(
             self.robot.observation_space.shape[0] + self.terrain_map.flatten().shape[0]
@@ -897,6 +900,8 @@ class Walker3DStepperEnv(EnvBase):
             [-10] + [20, -20] * (self.n_steps // 2 - 1) + [10]
         )
         self.base_phi *= np.sign(float(self.robot.mirrored) - 0.5)
+
+        self.standing_penalty = 0.
         self.calc_feet_state()
 
         # Randomize platforms
@@ -921,7 +926,6 @@ class Walker3DStepperEnv(EnvBase):
         self.targets = self.delta_to_k_targets(k=self.lookahead)
         # Order is important because walk_target is set up above
         self.calc_potential()
-
         self.terrain_map = self.get_terrain_map()
 
         state = np.concatenate((self.robot_state, self.terrain_map.flatten()))
@@ -955,7 +959,7 @@ class Walker3DStepperEnv(EnvBase):
         self.robot_state = self.robot.calc_state()
         self.calc_env_state(action)
 
-        reward = 1.0 * self.progress - self.energy_penalty
+        reward = 3.0 * self.progress - self.energy_penalty - self.standing_penalty
         reward += self.step_bonus + self.target_bonus - self.speed_penalty
         reward += self.tall_bonus - self.posture_penalty - self.joints_penalty
 
@@ -1046,7 +1050,7 @@ class Walker3DStepperEnv(EnvBase):
 
         v = self.robot.body_vel
         speed = (v[0] ** 2 + v[1] ** 2 + v[2] ** 2) ** (1 / 2)
-        self.speed_penalty = max(speed - 1.6, 0) * 0
+        self.speed_penalty = 2*np.exp(-abs(speed - 1.6))
         # print(speed)
 
         self.energy_penalty = self.electricity_cost * float(
@@ -1059,7 +1063,7 @@ class Walker3DStepperEnv(EnvBase):
         )
 
         height = self.robot.body_xyz[2] - np.min(self.robot.feet_xyz[:, 2])
-        self.tall_bonus = 2.0 if height > self.done_height else -1.0
+        self.tall_bonus = 1.0 if height > self.done_height or self.robot.body_xyz[2] > 0.5 else -1.0
         self.done = self.done or self.tall_bonus < 0
 
     def calc_feet_state(self):
@@ -1069,6 +1073,19 @@ class Walker3DStepperEnv(EnvBase):
         target_cover_id = {(next_step.id, next_step.cover_id)}
 
         self.foot_dist_to_target = np.array([0.0, 0.0])
+
+        self.standing_extent = self.prev_standing_feet
+
+        self.standing_extent = self.robot.feet_xyz - self.standing_extent
+
+        self.prev_standing_feet = self.robot.feet_xyz
+
+        if np.linalg.norm(self.standing_extent[0]) < 0.05 and np.linalg.norm(self.standing_extent[1]) < 0.05:
+            self.standing_penalty = 2.0
+            self.step_bonus = 0.0
+        else:
+            self.standing_penalty = 0.0
+            self.step_bonus = 2*max(np.linalg.norm(self.standing_extent[0]),np.linalg.norm(self.standing_extent[1]))
 
         p_xyz = [7.0, 0.0, 0.0] #self.terrain_info[self.next_step_index, [0, 1, 2]]
         self.target_reached = False
@@ -1088,43 +1105,26 @@ class Walker3DStepperEnv(EnvBase):
             if contact_ids and ((delta[0] ** 2 + delta[1] ** 2 + delta[2] ** 2) < 0.3):
                 self.target_reached = True
 
-        # At least one foot is on the plank
-        if self.target_reached:
-            self.target_reached_count += 1
-
-            # Make target stationary for a bit
-            if self.target_reached_count >= self.stop_frames:
-                self.next_step_index += 1
-                self.target_reached_count = 0
-                self.update_steps()
-
-            # Prevent out of bound
-            if self.next_step_index >= len(self.terrain_info):
-                self.next_step_index -= 1
-
     def calc_step_reward(self):
 
-        self.step_bonus = 0
-        if self.target_reached and self.target_reached_count == 1:
-            self.step_bonus = 50 * np.exp(-self.foot_dist_to_target.min() / 0.25)
+        # self.step_bonus = 0
+        # if self.target_reached and self.target_reached_count == 1:
+        #     self.step_bonus = 50 * np.exp(-self.foot_dist_to_target.min() / 0.25)
 
-            if self.make_phantoms_yes and self.next_step_index % 3 == 0:
-                phantom = self.phantoms[self.current_phantom_idx]
-                # set the phantom pose to current pose
-                current_pose = self.robot.to_radians(self.robot.joint_angles)
-                current_pos = self.robot.body_xyz
-                current_orientation = self.robot.robot_body.pose().orientation()
-                phantom.reset(pos=current_pos, pose=current_pose, quat=current_orientation)
+        #     if self.make_phantoms_yes and self.next_step_index % 3 == 0:
+        #         phantom = self.phantoms[self.current_phantom_idx]
+        #         # set the phantom pose to current pose
+        #         current_pose = self.robot.to_radians(self.robot.joint_angles)
+        #         current_pos = self.robot.body_xyz
+        #         current_orientation = self.robot.robot_body.pose().orientation()
+        #         phantom.reset(pos=current_pos, pose=current_pose, quat=current_orientation)
 
-                self.current_phantom_idx += 1
-                self.current_phantom_idx %= 20
+        #         self.current_phantom_idx += 1
+        #         self.current_phantom_idx %= 20
 
         # For last step only
         self.target_bonus = 0
-        if (
-                self.next_step_index == len(self.terrain_info) - 1
-                and self.distance_to_target < 0.15
-        ):
+        if (self.distance_to_target < 0.15):
             self.target_bonus = 2.0
 
     def calc_env_state(self, action):
@@ -1142,12 +1142,6 @@ class Walker3DStepperEnv(EnvBase):
         self.targets = self.delta_to_k_targets(k=self.lookahead)
 
         self.terrain_map = self.get_terrain_map()
-
-        self.update_terrain = (cur_step_index != self.next_step_index)
-
-        if cur_step_index != self.next_step_index:
-            self.update_terrain_info()
-            self.calc_potential()
 
     def delta_to_k_targets(self, k=1):
         """ Return positions (relative to root) of target, and k-1 step after """
@@ -1212,256 +1206,256 @@ class Walker3DStepperEnv(EnvBase):
         #     self.current_phantom_idx += 1
         #     self.current_phantom_idx %= 20
 
-    def sample_next_next_step_1(self):
-        pairs = np.indices(dimensions=(self.yaw_sample_size, self.pitch_sample_size))
-        self.yaw_pitch_prob /= self.yaw_pitch_prob.sum()
-        inds = self.np_random.choice(np.arange(self.yaw_sample_size * self.pitch_sample_size),
-                                     p=self.yaw_pitch_prob.reshape(-1), size=1, replace=False)
+    # def sample_next_next_step_1(self):
+    #     pairs = np.indices(dimensions=(self.yaw_sample_size, self.pitch_sample_size))
+    #     self.yaw_pitch_prob /= self.yaw_pitch_prob.sum()
+    #     inds = self.np_random.choice(np.arange(self.yaw_sample_size * self.pitch_sample_size),
+    #                                  p=self.yaw_pitch_prob.reshape(-1), size=1, replace=False)
 
-        inds = pairs.reshape(2, self.yaw_sample_size * self.pitch_sample_size)[:, inds].squeeze()
-        # print(self.yaw_pitch_prob, inds)
-        yaw = self.yaw_samples[inds[0]]
-        pitch = self.pitch_samples[inds[1]] + np.pi / 2
+    #     inds = pairs.reshape(2, self.yaw_sample_size * self.pitch_sample_size)[:, inds].squeeze()
+    #     # print(self.yaw_pitch_prob, inds)
+    #     yaw = self.yaw_samples[inds[0]]
+    #     pitch = self.pitch_samples[inds[1]] + np.pi / 2
 
-        self.next_pitch = self.next_next_pitch
-        self.next_yaw = self.next_next_yaw
-        self.next_dr = np.copy(self.next_next_dr)
+    #     self.next_pitch = self.next_next_pitch
+    #     self.next_yaw = self.next_next_yaw
+    #     self.next_dr = np.copy(self.next_next_dr)
 
-        self.next_next_pitch = pitch
-        self.next_next_yaw = yaw
-        self.next_next_dr = self.np_random.uniform(*self.r_range)
+    #     self.next_next_pitch = pitch
+    #     self.next_next_yaw = yaw
+    #     self.next_next_dr = self.np_random.uniform(*self.r_range)
 
-        self.set_next_next_step_location(self.next_next_pitch, self.next_next_yaw, self.next_next_dr)
+    #     self.set_next_next_step_location(self.next_next_pitch, self.next_next_yaw, self.next_next_dr)
 
-    def sample_next_next_step_2(self):
-        pairs = np.indices(dimensions=(self.yaw_sample_size, self.pitch_sample_size, self.r_sample_size))
-        self.yaw_pitch_r_prob /= self.yaw_pitch_r_prob.sum()
-        inds = self.np_random.choice(np.arange(self.yaw_sample_size * self.pitch_sample_size * self.r_sample_size),
-                                     p=self.yaw_pitch_r_prob.reshape(-1), size=1, replace=False)
+    # def sample_next_next_step_2(self):
+    #     pairs = np.indices(dimensions=(self.yaw_sample_size, self.pitch_sample_size, self.r_sample_size))
+    #     self.yaw_pitch_r_prob /= self.yaw_pitch_r_prob.sum()
+    #     inds = self.np_random.choice(np.arange(self.yaw_sample_size * self.pitch_sample_size * self.r_sample_size),
+    #                                  p=self.yaw_pitch_r_prob.reshape(-1), size=1, replace=False)
 
-        inds = pairs.reshape(3, self.yaw_sample_size * self.pitch_sample_size * self.r_sample_size)[:, inds].squeeze()
-        # print(self.yaw_pitch_prob, inds)
-        yaw = self.yaw_samples[inds[0]]
-        pitch = self.pitch_samples[inds[1]] + np.pi / 2
-        dr = self.r_samples[inds[2]]
+    #     inds = pairs.reshape(3, self.yaw_sample_size * self.pitch_sample_size * self.r_sample_size)[:, inds].squeeze()
+    #     # print(self.yaw_pitch_prob, inds)
+    #     yaw = self.yaw_samples[inds[0]]
+    #     pitch = self.pitch_samples[inds[1]] + np.pi / 2
+    #     dr = self.r_samples[inds[2]]
 
-        self.next_pitch = self.next_next_pitch
-        self.next_yaw = self.next_next_yaw
-        self.next_dr = np.copy(self.next_next_dr)
+    #     self.next_pitch = self.next_next_pitch
+    #     self.next_yaw = self.next_next_yaw
+    #     self.next_dr = np.copy(self.next_next_dr)
 
-        self.next_next_pitch = pitch
-        self.next_next_yaw = yaw
-        self.next_next_dr = dr
+    #     self.next_next_pitch = pitch
+    #     self.next_next_yaw = yaw
+    #     self.next_next_dr = dr
 
-        self.set_next_next_step_location(self.next_next_pitch, self.next_next_yaw, self.next_next_dr)
+    #     self.set_next_next_step_location(self.next_next_pitch, self.next_next_yaw, self.next_next_dr)
 
-    def sample_next_next_step(self):
-        pairs = np.indices(dimensions=(
-            self.yaw_sample_size, self.pitch_sample_size, self.r_sample_size, self.x_tilt_sample_size,
-            self.y_tilt_sample_size))
-        self.yaw_pitch_r_tilt_prob /= self.yaw_pitch_r_tilt_prob.sum()
-        inds = self.np_random.choice(np.arange(
-            self.yaw_sample_size * self.pitch_sample_size * self.r_sample_size * self.x_tilt_sample_size * self.y_tilt_sample_size),
-            p=self.yaw_pitch_r_tilt_prob.reshape(-1), size=1, replace=False)
+    # def sample_next_next_step(self):
+    #     pairs = np.indices(dimensions=(
+    #         self.yaw_sample_size, self.pitch_sample_size, self.r_sample_size, self.x_tilt_sample_size,
+    #         self.y_tilt_sample_size))
+    #     self.yaw_pitch_r_tilt_prob /= self.yaw_pitch_r_tilt_prob.sum()
+    #     inds = self.np_random.choice(np.arange(
+    #         self.yaw_sample_size * self.pitch_sample_size * self.r_sample_size * self.x_tilt_sample_size * self.y_tilt_sample_size),
+    #         p=self.yaw_pitch_r_tilt_prob.reshape(-1), size=1, replace=False)
 
-        inds = pairs.reshape(5,
-                             self.yaw_sample_size * self.pitch_sample_size * self.r_sample_size * self.x_tilt_sample_size * self.y_tilt_sample_size)[
-               :, inds].squeeze()
-        # print(self.yaw_pitch_prob, inds)
-        yaw = self.yaw_samples[inds[0]]
-        pitch = self.pitch_samples[inds[1]] + np.pi / 2
-        dr = self.r_samples[inds[2]]
-        x_tilt = self.x_tilt_samples[inds[3]]
-        y_tilt = self.y_tilt_samples[inds[4]]
+    #     inds = pairs.reshape(5,
+    #                          self.yaw_sample_size * self.pitch_sample_size * self.r_sample_size * self.x_tilt_sample_size * self.y_tilt_sample_size)[
+    #            :, inds].squeeze()
+    #     # print(self.yaw_pitch_prob, inds)
+    #     yaw = self.yaw_samples[inds[0]]
+    #     pitch = self.pitch_samples[inds[1]] + np.pi / 2
+    #     dr = self.r_samples[inds[2]]
+    #     x_tilt = self.x_tilt_samples[inds[3]]
+    #     y_tilt = self.y_tilt_samples[inds[4]]
 
-        self.next_pitch = self.next_next_pitch
-        self.next_yaw = self.next_next_yaw
-        self.next_dr = np.copy(self.next_next_dr)
-        self.next_x_tilt = np.copy(self.next_next_x_tilt)
-        self.next_y_tilt = np.copy(self.next_next_y_tilt)
+    #     self.next_pitch = self.next_next_pitch
+    #     self.next_yaw = self.next_next_yaw
+    #     self.next_dr = np.copy(self.next_next_dr)
+    #     self.next_x_tilt = np.copy(self.next_next_x_tilt)
+    #     self.next_y_tilt = np.copy(self.next_next_y_tilt)
 
-        self.next_next_pitch = pitch
-        self.next_next_yaw = yaw
-        self.next_next_dr = dr
-        self.next_next_x_tilt = x_tilt
-        self.next_next_y_tilt = y_tilt
+    #     self.next_next_pitch = pitch
+    #     self.next_next_yaw = yaw
+    #     self.next_next_dr = dr
+    #     self.next_next_x_tilt = x_tilt
+    #     self.next_next_y_tilt = y_tilt
 
-        self.set_next_next_step_location(self.next_next_pitch, self.next_next_yaw, self.next_next_dr, x_tilt=x_tilt,
-                                         y_tilt=y_tilt)
+    #     self.set_next_next_step_location(self.next_next_pitch, self.next_next_yaw, self.next_next_dr, x_tilt=x_tilt,
+    #                                      y_tilt=y_tilt)
 
-    def get_temp_state(self):
-        obs = self.get_state()
-        target = self.delta_to_k_targets(k=self.lookahead)
-        return np.concatenate((obs, target.flatten()))
+    # def get_temp_state(self):
+    #     obs = self.get_state()
+    #     target = self.delta_to_k_targets(k=self.lookahead)
+    #     return np.concatenate((obs, target.flatten()))
 
-    def create_temp_states_1(self):
-        if self.update_terrain:
-            temp_states = []
-            for yaw in self.fake_yaw_samples:
-                for pitch in self.fake_pitch_samples:
-                    actual_pitch = np.pi / 2 - pitch
-                    # print(actual_pitch / np.pi * 180)
-                    # self.set_next_step_location(actual_pitch, yaw, 0.7)
-                    self.set_next_next_step_location(actual_pitch, yaw, 0.7)
-                    temp_state = self.get_temp_state()
-                    temp_states.append(temp_state)
-            # self.set_next_step_location(self.next_pitch, self.next_yaw, self.next_dr)
-            self.set_next_next_step_location(self.next_next_pitch, self.next_next_yaw, self.next_next_dr)
-            ret = np.stack(temp_states)
-        else:
-            ret = self.temp_states
-        return ret
+    # def create_temp_states_1(self):
+    #     if self.update_terrain:
+    #         temp_states = []
+    #         for yaw in self.fake_yaw_samples:
+    #             for pitch in self.fake_pitch_samples:
+    #                 actual_pitch = np.pi / 2 - pitch
+    #                 # print(actual_pitch / np.pi * 180)
+    #                 # self.set_next_step_location(actual_pitch, yaw, 0.7)
+    #                 self.set_next_next_step_location(actual_pitch, yaw, 0.7)
+    #                 temp_state = self.get_temp_state()
+    #                 temp_states.append(temp_state)
+    #         # self.set_next_step_location(self.next_pitch, self.next_yaw, self.next_dr)
+    #         self.set_next_next_step_location(self.next_next_pitch, self.next_next_yaw, self.next_next_dr)
+    #         ret = np.stack(temp_states)
+    #     else:
+    #         ret = self.temp_states
+    #     return ret
 
-    def create_temp_states_2(self):
-        if self.update_terrain:
-            temp_states = []
-            for yaw in self.fake_yaw_samples:
-                for pitch in self.fake_pitch_samples:
-                    for r in self.fake_r_samples:
-                        actual_pitch = np.pi / 2 - pitch
-                        # self.set_next_step_location(actual_pitch, yaw, r)
-                        self.set_next_next_step_location(actual_pitch, yaw, r)
-                        temp_state = self.get_temp_state()
-                        temp_states.append(temp_state)
-            # self.set_next_step_location(self.next_pitch, self.next_yaw, self.next_dr)
-            self.set_next_next_step_location(self.next_next_pitch, self.next_next_yaw, self.next_next_dr)
-            ret = np.stack(temp_states)
-        else:
-            ret = self.temp_states
-        return ret
+    # def create_temp_states_2(self):
+    #     if self.update_terrain:
+    #         temp_states = []
+    #         for yaw in self.fake_yaw_samples:
+    #             for pitch in self.fake_pitch_samples:
+    #                 for r in self.fake_r_samples:
+    #                     actual_pitch = np.pi / 2 - pitch
+    #                     # self.set_next_step_location(actual_pitch, yaw, r)
+    #                     self.set_next_next_step_location(actual_pitch, yaw, r)
+    #                     temp_state = self.get_temp_state()
+    #                     temp_states.append(temp_state)
+    #         # self.set_next_step_location(self.next_pitch, self.next_yaw, self.next_dr)
+    #         self.set_next_next_step_location(self.next_next_pitch, self.next_next_yaw, self.next_next_dr)
+    #         ret = np.stack(temp_states)
+    #     else:
+    #         ret = self.temp_states
+    #     return ret
 
-    def create_temp_states(self):
-        if self.update_terrain:
-            temp_states = []
-            for yaw in self.fake_yaw_samples:
-                for pitch in self.fake_pitch_samples:
-                    for r in self.fake_r_samples:
-                        for x_tilt in self.fake_x_tilt_samples:
-                            for y_tilt in self.fake_y_tilt_samples:
-                                actual_pitch = np.pi / 2 - pitch
-                                self.set_next_next_step_location(actual_pitch, yaw, r, x_tilt, y_tilt)
-                                temp_state = self.get_temp_state()
-                                temp_states.append(temp_state)
-            # self.set_next_step_location(self.next_pitch, self.next_yaw, self.next_dr)
-            self.set_next_next_step_location(self.next_next_pitch, self.next_next_yaw, self.next_next_dr,
-                                             self.next_next_x_tilt, self.next_next_y_tilt)
-            ret = np.stack(temp_states)
-        else:
-            ret = self.temp_states
-        return ret
+    # def create_temp_states(self):
+    #     if self.update_terrain:
+    #         temp_states = []
+    #         for yaw in self.fake_yaw_samples:
+    #             for pitch in self.fake_pitch_samples:
+    #                 for r in self.fake_r_samples:
+    #                     for x_tilt in self.fake_x_tilt_samples:
+    #                         for y_tilt in self.fake_y_tilt_samples:
+    #                             actual_pitch = np.pi / 2 - pitch
+    #                             self.set_next_next_step_location(actual_pitch, yaw, r, x_tilt, y_tilt)
+    #                             temp_state = self.get_temp_state()
+    #                             temp_states.append(temp_state)
+    #         # self.set_next_step_location(self.next_pitch, self.next_yaw, self.next_dr)
+    #         self.set_next_next_step_location(self.next_next_pitch, self.next_next_yaw, self.next_next_dr,
+    #                                          self.next_next_x_tilt, self.next_next_y_tilt)
+    #         ret = np.stack(temp_states)
+    #     else:
+    #         ret = self.temp_states
+    #     return ret
 
-    def set_next_next_step_location(self, pitch, yaw, dr, x_tilt=0, y_tilt=0):
-        next_step_xyz = self.terrain_info[self.next_step_index]
-        bound_checked_index = (self.next_step_index + 1) % self.n_steps
+    # def set_next_next_step_location(self, pitch, yaw, dr, x_tilt=0, y_tilt=0):
+    #     next_step_xyz = self.terrain_info[self.next_step_index]
+    #     bound_checked_index = (self.next_step_index + 1) % self.n_steps
 
-        dr = dr
-        base_phi = self.base_phi[bound_checked_index]
-        base_yaw = self.terrain_info[self.next_step_index, 3]
+    #     dr = dr
+    #     base_phi = self.base_phi[bound_checked_index]
+    #     base_yaw = self.terrain_info[self.next_step_index, 3]
 
-        dx = dr * np.sin(pitch) * np.cos(yaw + base_phi)
-        # clip to prevent overlapping
-        dx = np.sign(dx) * min(max(abs(dx), self.step_radius * 2.5), self.r_range[1])
-        dy = dr * np.sin(pitch) * np.sin(yaw + base_phi)
+    #     dx = dr * np.sin(pitch) * np.cos(yaw + base_phi)
+    #     # clip to prevent overlapping
+    #     dx = np.sign(dx) * min(max(abs(dx), self.step_radius * 2.5), self.r_range[1])
+    #     dy = dr * np.sin(pitch) * np.sin(yaw + base_phi)
 
-        matrix = np.array([
-            [np.cos(base_yaw), -np.sin(base_yaw)],
-            [np.sin(base_yaw), np.cos(base_yaw)]
-        ])
+    #     matrix = np.array([
+    #         [np.cos(base_yaw), -np.sin(base_yaw)],
+    #         [np.sin(base_yaw), np.cos(base_yaw)]
+    #     ])
 
-        dxy = np.dot(matrix, np.concatenate(([dx], [dy])))
+    #     dxy = np.dot(matrix, np.concatenate(([dx], [dy])))
 
-        x = next_step_xyz[0] + dxy[0]
-        y = next_step_xyz[1] + dxy[1]
-        z = next_step_xyz[2] + dr * np.cos(pitch)
+    #     x = next_step_xyz[0] + dxy[0]
+    #     y = next_step_xyz[1] + dxy[1]
+    #     z = next_step_xyz[2] + dr * np.cos(pitch)
 
-        self.terrain_info[bound_checked_index, 0] = x
-        self.terrain_info[bound_checked_index, 1] = y
-        self.terrain_info[bound_checked_index, 2] = z
-        self.terrain_info[bound_checked_index, 3] = yaw + base_yaw
-        self.terrain_info[bound_checked_index, 4] = x_tilt
-        self.terrain_info[bound_checked_index, 5] = y_tilt
+    #     self.terrain_info[bound_checked_index, 0] = x
+    #     self.terrain_info[bound_checked_index, 1] = y
+    #     self.terrain_info[bound_checked_index, 2] = z
+    #     self.terrain_info[bound_checked_index, 3] = yaw + base_yaw
+    #     self.terrain_info[bound_checked_index, 4] = x_tilt
+    #     self.terrain_info[bound_checked_index, 5] = y_tilt
 
-    def set_next_step_location(self, pitch, yaw, dr, x_tilt=0, y_tilt=0):
-        next_step_xyz = self.terrain_info[self.next_step_index - 1]
-        bound_checked_index = (self.next_step_index) % self.n_steps
+    # def set_next_step_location(self, pitch, yaw, dr, x_tilt=0, y_tilt=0):
+    #     next_step_xyz = self.terrain_info[self.next_step_index - 1]
+    #     bound_checked_index = (self.next_step_index) % self.n_steps
 
-        dr = dr
-        base_phi = self.base_phi[bound_checked_index]
-        base_yaw = self.terrain_info[self.next_step_index - 1, 3]
+    #     dr = dr
+    #     base_phi = self.base_phi[bound_checked_index]
+    #     base_yaw = self.terrain_info[self.next_step_index - 1, 3]
 
-        dx = dr * np.sin(pitch) * np.cos(yaw + base_phi)
-        # clip to prevent overlapping
-        dx = np.sign(dx) * min(max(abs(dx), self.step_radius * 2.5), self.r_range[1])
-        dy = dr * np.sin(pitch) * np.sin(yaw + base_phi)
+    #     dx = dr * np.sin(pitch) * np.cos(yaw + base_phi)
+    #     # clip to prevent overlapping
+    #     dx = np.sign(dx) * min(max(abs(dx), self.step_radius * 2.5), self.r_range[1])
+    #     dy = dr * np.sin(pitch) * np.sin(yaw + base_phi)
 
-        matrix = np.array([
-            [np.cos(base_yaw), -np.sin(base_yaw)],
-            [np.sin(base_yaw), np.cos(base_yaw)]
-        ])
+    #     matrix = np.array([
+    #         [np.cos(base_yaw), -np.sin(base_yaw)],
+    #         [np.sin(base_yaw), np.cos(base_yaw)]
+    #     ])
 
-        dxy = np.dot(matrix, np.concatenate(([dx], [dy])))
+    #     dxy = np.dot(matrix, np.concatenate(([dx], [dy])))
 
-        x = next_step_xyz[0] + dxy[0]
-        y = next_step_xyz[1] + dxy[1]
-        z = next_step_xyz[2] + dr * np.cos(pitch)
+    #     x = next_step_xyz[0] + dxy[0]
+    #     y = next_step_xyz[1] + dxy[1]
+    #     z = next_step_xyz[2] + dr * np.cos(pitch)
 
-        self.terrain_info[bound_checked_index, 0] = x
-        self.terrain_info[bound_checked_index, 1] = y
-        self.terrain_info[bound_checked_index, 2] = z
-        self.terrain_info[bound_checked_index, 3] = yaw + base_yaw
-        self.terrain_info[bound_checked_index, 4] = x_tilt
-        self.terrain_info[bound_checked_index, 5] = y_tilt
+    #     self.terrain_info[bound_checked_index, 0] = x
+    #     self.terrain_info[bound_checked_index, 1] = y
+    #     self.terrain_info[bound_checked_index, 2] = z
+    #     self.terrain_info[bound_checked_index, 3] = yaw + base_yaw
+    #     self.terrain_info[bound_checked_index, 4] = x_tilt
+    #     self.terrain_info[bound_checked_index, 5] = y_tilt
 
-    def update_sample_prob_1(self, sample_prob):
-        if self.update_terrain:
-            self.yaw_pitch_prob = sample_prob
-            self.update_terrain_info()
+    # def update_sample_prob_1(self, sample_prob):
+    #     if self.update_terrain:
+    #         self.yaw_pitch_prob = sample_prob
+    #         self.update_terrain_info()
 
-    def update_sample_prob_2(self, sample_prob):
-        if self.update_terrain:
-            self.yaw_pitch_r_prob = sample_prob
-            self.update_terrain_info()
+    # def update_sample_prob_2(self, sample_prob):
+    #     if self.update_terrain:
+    #         self.yaw_pitch_r_prob = sample_prob
+    #         self.update_terrain_info()
 
-    def update_sample_prob(self, sample_prob):
-        if self.update_terrain:
-            self.yaw_pitch_r_tilt_prob = sample_prob
-            self.update_terrain_info()
+    # def update_sample_prob(self, sample_prob):
+    #     if self.update_terrain:
+    #         self.yaw_pitch_r_tilt_prob = sample_prob
+    #         self.update_terrain_info()
 
-    def update_curriculum_1(self, curriculum):
-        self.yaw_pitch_prob *= 0
-        self.yaw_pitch_prob[(self.yaw_sample_size - 1) // 2, (self.pitch_sample_size - 1) // 2] = 1
-        # self.curriculum = min(curriculum, self.max_curriculum)
-        # half_size = (self.sample_size-1)//2
-        # if self.curriculum >= half_size:
-        #    self.curriculum = half_size
-        # self.yaw_pitch_prob *= 0
-        # prob = 1.0 / (self.curriculum * 2 + 1)**2
-        # window = slice(half_size-self.curriculum, half_size+self.curriculum+1)
-        # self.yaw_pitch_prob[window, window] = prob
+    # def update_curriculum_1(self, curriculum):
+    #     self.yaw_pitch_prob *= 0
+    #     self.yaw_pitch_prob[(self.yaw_sample_size - 1) // 2, (self.pitch_sample_size - 1) // 2] = 1
+    #     # self.curriculum = min(curriculum, self.max_curriculum)
+    #     # half_size = (self.sample_size-1)//2
+    #     # if self.curriculum >= half_size:
+    #     #    self.curriculum = half_size
+    #     # self.yaw_pitch_prob *= 0
+    #     # prob = 1.0 / (self.curriculum * 2 + 1)**2
+    #     # window = slice(half_size-self.curriculum, half_size+self.curriculum+1)
+    #     # self.yaw_pitch_prob[window, window] = prob
 
-    def update_curriculum_2(self, curriculum):
-        self.yaw_pitch_r_prob *= 0
-        self.yaw_pitch_r_prob[(self.yaw_sample_size - 1) // 2, (self.pitch_sample_size - 1) // 2, 0] = 1
-        # self.curriculum = min(curriculum, self.max_curriculum)
-        # half_size = (self.sample_size-1)//2
-        # if self.curriculum >= half_size:
-        #     self.curriculum = half_size
-        # self.yaw_pitch_r_prob *= 0
-        # prob = 1.0 / (self.curriculum * 2 + 1)**3
-        # window = slice(half_size-self.curriculum, half_size+self.curriculum+1)
-        # self.yaw_pitch_r_prob[window, window, 0:self.curriculum * 2 + 1] = prob
+    # def update_curriculum_2(self, curriculum):
+    #     self.yaw_pitch_r_prob *= 0
+    #     self.yaw_pitch_r_prob[(self.yaw_sample_size - 1) // 2, (self.pitch_sample_size - 1) // 2, 0] = 1
+    #     # self.curriculum = min(curriculum, self.max_curriculum)
+    #     # half_size = (self.sample_size-1)//2
+    #     # if self.curriculum >= half_size:
+    #     #     self.curriculum = half_size
+    #     # self.yaw_pitch_r_prob *= 0
+    #     # prob = 1.0 / (self.curriculum * 2 + 1)**3
+    #     # window = slice(half_size-self.curriculum, half_size+self.curriculum+1)
+    #     # self.yaw_pitch_r_prob[window, window, 0:self.curriculum * 2 + 1] = prob
 
-    def update_curriculum(self, curriculum):
-        # self.yaw_pitch_r_tilt_prob *= 0
-        # self.yaw_pitch_r_tilt_prob[(self.yaw_sample_size-1)//2, (self.pitch_sample_size-1)//2, 0, (self.x_tilt_sample_size-1)//2, (self.y_tilt_sample_size-1)//2] = 1
-        self.curriculum = min(curriculum, self.max_curriculum)
-        half_size = (self.sample_size - 1) // 2
-        if self.curriculum >= half_size:
-            self.curriculum = half_size
-        self.yaw_pitch_r_tilt_prob *= 0
-        prob = 1.0 / (self.curriculum * 2 + 1) ** 5
-        window = slice(half_size - self.curriculum, half_size + self.curriculum + 1)
-        self.yaw_pitch_r_tilt_prob[window, window, 0:self.curriculum * 2 + 1, window, window] = prob
+    # def update_curriculum(self, curriculum):
+    #     # self.yaw_pitch_r_tilt_prob *= 0
+    #     # self.yaw_pitch_r_tilt_prob[(self.yaw_sample_size-1)//2, (self.pitch_sample_size-1)//2, 0, (self.x_tilt_sample_size-1)//2, (self.y_tilt_sample_size-1)//2] = 1
+    #     self.curriculum = min(curriculum, self.max_curriculum)
+    #     half_size = (self.sample_size - 1) // 2
+    #     if self.curriculum >= half_size:
+    #         self.curriculum = half_size
+    #     self.yaw_pitch_r_tilt_prob *= 0
+    #     prob = 1.0 / (self.curriculum * 2 + 1) ** 5
+    #     window = slice(half_size - self.curriculum, half_size + self.curriculum + 1)
+    #     self.yaw_pitch_r_tilt_prob[window, window, 0:self.curriculum * 2 + 1, window, window] = prob
 
     def get_mirror_indices(self):
 
