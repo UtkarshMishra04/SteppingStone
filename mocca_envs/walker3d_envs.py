@@ -555,6 +555,7 @@ class Walker3DStepperEnv(EnvBase):
         self.terrain_map = self.get_terrain_map()
 
         self.standing_penalty = 0.
+        self.flying_penalty = 0.
         self.prev_standing_feet = self.robot.feet_xyz
 
         # (2 targets) * (x, y, z, x_tilt, y_tilt)
@@ -959,7 +960,7 @@ class Walker3DStepperEnv(EnvBase):
         self.robot_state = self.robot.calc_state()
         self.calc_env_state(action)
 
-        reward = 3.0 * self.progress - self.energy_penalty - self.standing_penalty
+        reward = 2.0 * self.progress - self.energy_penalty - self.standing_penalty - self.flying_penalty
         reward += self.step_bonus + self.target_bonus - self.speed_penalty
         reward += self.tall_bonus - self.posture_penalty - self.joints_penalty
 
@@ -1063,7 +1064,7 @@ class Walker3DStepperEnv(EnvBase):
         )
 
         height = self.robot.body_xyz[2] - np.min(self.robot.feet_xyz[:, 2])
-        self.tall_bonus = 1.0 if height > self.done_height or self.robot.body_xyz[2] > 0.5 else -1.0
+        self.tall_bonus = 1.0 if height > self.done_height or self.robot.body_xyz[2] > 0.5 else -3.0
         self.done = self.done or self.tall_bonus < 0
 
     def calc_feet_state(self):
@@ -1104,6 +1105,11 @@ class Walker3DStepperEnv(EnvBase):
             #     self.target_reached = True
             if contact_ids and ((delta[0] ** 2 + delta[1] ** 2 + delta[2] ** 2) < 0.3):
                 self.target_reached = True
+
+        if np.sum(self.robot.feet_contact) == 0:
+            self.flying_penalty = 2.0
+        else:
+            self.flying_penalty = 0.0
 
     def calc_step_reward(self):
 
