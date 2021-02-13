@@ -512,6 +512,9 @@ class Walker3DStepperEnv(EnvBase):
         self.lookahead = 2
         self.next_step_index = 0
 
+        self.max_step_length = 0.7
+        self.p_xyz = [self.max_step_length, 0.0, 0.0]
+
         # self.base_phi = DEG2RAD * np.array(
         #     [-10] + [20, -20] * (self.n_steps // 2 - 1) + [10]
         # )
@@ -893,6 +896,9 @@ class Walker3DStepperEnv(EnvBase):
         self.done = False
         self.target_reached_count = 0
 
+        self.max_step_length = 0.7
+        self.p_xyz = np.array([self.max_step_length, 0.0, 0.0])
+
         # self._p.restoreState(self.state_id)
 
         # self.robot_state = self.robot.reset(random_pose=True)
@@ -1087,8 +1093,8 @@ class Walker3DStepperEnv(EnvBase):
         else:
             self.standing_penalty = 0.0
             self.step_bonus = 2*max(np.linalg.norm(self.standing_extent[0]),np.linalg.norm(self.standing_extent[1]))
-
-        p_xyz = [7.0, 0.0, 0.0] #self.terrain_info[self.next_step_index, [0, 1, 2]]
+        
+        #self.terrain_info[self.next_step_index, [0, 1, 2]]
         self.target_reached = False
         for i, f in enumerate(self.robot.feet):
             self.robot.feet_xyz[i] = f.pose().xyz()
@@ -1097,7 +1103,7 @@ class Walker3DStepperEnv(EnvBase):
             # if contact_ids is not empty, then foot is in contact
             self.robot.feet_contact[i] = 1.0 if contact_ids else 0.0
 
-            delta = self.robot.feet_xyz[i] - p_xyz
+            delta = self.robot.feet_xyz[i] - self.p_xyz
             distance = (delta[0] ** 2 + delta[1] ** 2) ** (1 / 2)
             self.foot_dist_to_target[i] = distance
 
@@ -1105,6 +1111,7 @@ class Walker3DStepperEnv(EnvBase):
             #     self.target_reached = True
             if contact_ids and ((delta[0] ** 2 + delta[1] ** 2 + delta[2] ** 2) < 0.3):
                 self.target_reached = True
+                self.p_xyz += np.array([self.max_step_length, 0.0, 0.0])
 
         if np.sum(self.robot.feet_contact) == 0:
             self.flying_penalty = 2.0
