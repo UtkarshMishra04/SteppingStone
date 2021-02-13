@@ -1,0 +1,56 @@
+{
+  "experiment_info": {
+    "base_dir": "/home/utkarsh/TerrainRL/common",
+    "dependencies": [
+      "numpy==1.19.2",
+      "sacred==0.8.2",
+      "torch==1.7.1"
+    ],
+    "mainfile": "sacred_utils.py",
+    "name": "sacred_utils",
+    "repositories": [
+      {
+        "commit": "6493c08d387d5691530ad9b477947d164b93748b",
+        "dirty": false,
+        "url": "https://github.com/UtkarshMishra04/SteppingStone"
+      }
+    ],
+    "sources": [
+      [
+        "sacred_utils.py",
+        "4065247d7341441f2a3aa79f46bb20e8"
+      ]
+    ]
+  },
+  "host_info": {
+    "ENV": {},
+    "cpu": "Intel(R) Xeon(R) Gold 5120 CPU @ 2.20GHz",
+    "gpus": {
+      "driver_version": "418.165.02",
+      "gpus": [
+        {
+          "model": "Quadro P5000",
+          "persistence_mode": true,
+          "total_memory": 16270
+        }
+      ]
+    },
+    "hostname": "root1-HP-Z8-G4-Workstation",
+    "os": [
+      "Linux",
+      "Linux-4.15.0-129-generic-x86_64-with-Ubuntu-18.04-bionic"
+    ],
+    "python_version": "3.6.9"
+  },
+  "start_time": [
+    2021,
+    2,
+    13,
+    15,
+    44,
+    50,
+    5,
+    44,
+    -1
+  ]
+}

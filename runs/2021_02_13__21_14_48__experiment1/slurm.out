@@ -1,0 +1,243 @@
+/home/utkarsh/opensim-rl/lib/python3.6/site-packages/torch/cuda/__init__.py:52: UserWarning: CUDA initialization: The NVIDIA driver on your system is too old (found version 10010). Please update your GPU driver by downloading and installing a new version from the URL: http://www.nvidia.com/Download/index.aspx Alternatively, go to: https://pytorch.org to install a PyTorch version that has been compiled with your version of the CUDA driver. (Triggered internally at  /pytorch/c10/cuda/CUDAFunctions.cpp:100.)
+  return torch._C._cuda_getDeviceCount() > 0
+WARNING - sacred_utils - No observers have been added to this run
+INFO - sacred_utils - Running command 'main'
+INFO - sacred_utils - Started
+==============SETTINGS================
+{'cuda': False,
+ 'curriculum_threshold': 0.85,
+ 'env_name': 'mocca_envs:Walker3DStepperEnv-v0',
+ 'episode_steps': 40000,
+ 'experiment_dir': 'runs/2021_02_13__21_14_48__experiment1/',
+ 'gae_lambda': 0.95,
+ 'gamma': 0.99,
+ 'load_saved_controller': False,
+ 'log_dir': 'runs/2021_02_13__21_14_48__experiment1/logs',
+ 'log_interval': 1,
+ 'lr': 0.0003,
+ 'lr_decay_type': 'exponential',
+ 'mini_batch_size': 1024,
+ 'num_ensembles': 1,
+ 'num_frames': 200000000.0,
+ 'num_mini_batch': 39,
+ 'num_processes': 56,
+ 'num_steps': 714,
+ 'num_tests': 4,
+ 'plot_prob': False,
+ 'ppo_params': {'clip_param': 0.2,
+                'entropy_coef': 0.0,
+                'eps': 1e-05,
+                'lr': 0.0003,
+                'max_grad_norm': 2.0,
+                'num_mini_batch': 39,
+                'ppo_epoch': 10,
+                'use_clipped_value_loss': False,
+                'value_loss_coef': 1.0},
+ 'replicate_num': 1,
+ 'robot_power_decay_type': 'exponential',
+ 'sampling_scale': 150,
+ 'save_dir': 'runs/2021_02_13__21_14_48__experiment1/models',
+ 'save_every': 10000000.0,
+ 'save_sampling_prob': False,
+ 'seed': 8,
+ 'use_adaptive_sampling': False,
+ 'use_curriculum': False,
+ 'use_gae': True,
+ 'use_mirror': False,
+ 'use_phase_mirror': False,
+ 'use_specialist': False,
+ 'use_threshold_sampling': False}
+--------------------------------------
+/home/utkarsh/opensim-rl/lib/python3.6/site-packages/gym/logger.py:30: UserWarning: [33mWARN: Box bound precision lowered by casting to float32[0m
+  warnings.warn(colorize('%s: %s'%('WARN', msg % args), 'yellow'))
+Updates 1, num timesteps 39984, FPS 536, mean/median reward -485.0/-220.1, min/max reward -10202.4/-110.3, test_mean/median reward -268.0/-268.0, test_min/max reward -268.0/-268.0, entropy -1.76589, value loss 6930.93741, policy loss -0.00585
+Updates 2, num timesteps 79968, FPS 535, mean/median reward -417.4/-239.6, min/max reward -5175.3/-56.5, test_mean/median reward -381.6/-381.6, test_min/max reward -381.6/-381.6, entropy -1.77295, value loss 6386.59664, policy loss -0.00074
+Updates 3, num timesteps 119952, FPS 534, mean/median reward -396.5/-223.8, min/max reward -3363.9/-26.8, test_mean/median reward -244.0/-244.0, test_min/max reward -244.0/-244.0, entropy -1.79178, value loss 6050.11964, policy loss -0.00208
+Updates 4, num timesteps 159936, FPS 533, mean/median reward -422.0/-231.1, min/max reward -8619.4/-20.0, test_mean/median reward -223.9/-223.9, test_min/max reward -223.9/-223.9, entropy -1.80716, value loss 11126.49766, policy loss -0.00403
+Updates 5, num timesteps 199920, FPS 533, mean/median reward -485.9/-207.2, min/max reward -8253.4/-62.8, test_mean/median reward -220.6/-220.6, test_min/max reward -220.6/-220.6, entropy -1.81678, value loss 7522.61816, policy loss -0.00263
+Updates 6, num timesteps 239904, FPS 532, mean/median reward -554.8/-243.6, min/max reward -5314.5/-112.5, test_mean/median reward -292.7/-292.7, test_min/max reward -292.7/-292.7, entropy -1.81908, value loss 7890.07109, policy loss -0.00288
+Updates 7, num timesteps 279888, FPS 532, mean/median reward -299.8/-206.0, min/max reward -2062.6/-94.9, test_mean/median reward -206.1/-206.1, test_min/max reward -206.1/-206.1, entropy -1.80643, value loss 8325.58713, policy loss -0.00189
+Updates 8, num timesteps 319872, FPS 531, mean/median reward -483.2/-200.2, min/max reward -8379.4/-87.6, test_mean/median reward -198.8/-198.8, test_min/max reward -198.8/-198.8, entropy -1.80859, value loss 12167.17027, policy loss -0.00318
+Updates 9, num timesteps 359856, FPS 531, mean/median reward -328.2/-209.9, min/max reward -3444.1/-98.7, test_mean/median reward -244.1/-244.1, test_min/max reward -244.1/-244.1, entropy -1.82716, value loss 8626.24479, policy loss -0.00399
+Updates 10, num timesteps 399840, FPS 531, mean/median reward -378.3/-237.4, min/max reward -6555.2/-39.8, test_mean/median reward -291.0/-291.0, test_min/max reward -291.0/-291.0, entropy -1.84946, value loss 8813.94893, policy loss -0.00290
+Updates 11, num timesteps 439824, FPS 531, mean/median reward -266.8/-204.1, min/max reward -2475.5/-106.4, test_mean/median reward -253.1/-253.1, test_min/max reward -253.1/-253.1, entropy -1.86999, value loss 4874.62960, policy loss -0.00492
+Updates 12, num timesteps 479808, FPS 530, mean/median reward -240.1/-199.4, min/max reward -1202.3/-66.3, test_mean/median reward -160.7/-160.7, test_min/max reward -160.7/-160.7, entropy -1.88752, value loss 7587.28623, policy loss 0.00292
+Updates 13, num timesteps 519792, FPS 529, mean/median reward -585.3/-212.4, min/max reward -7533.0/-117.3, test_mean/median reward -168.9/-168.9, test_min/max reward -168.9/-168.9, entropy -1.89803, value loss 9148.34343, policy loss -0.00188
+Updates 14, num timesteps 559776, FPS 529, mean/median reward -197.7/-189.5, min/max reward -342.9/-91.2, test_mean/median reward -143.5/-143.5, test_min/max reward -143.5/-143.5, entropy -1.91494, value loss 2502.03473, policy loss -0.00778
+Updates 15, num timesteps 599760, FPS 529, mean/median reward -221.7/-173.8, min/max reward -1533.5/-73.8, test_mean/median reward -145.1/-145.1, test_min/max reward -145.1/-145.1, entropy -1.93820, value loss 3548.64599, policy loss -0.00063
+Updates 16, num timesteps 639744, FPS 528, mean/median reward -194.1/-175.3, min/max reward -422.9/-79.7, test_mean/median reward -149.2/-149.2, test_min/max reward -149.2/-149.2, entropy -1.97062, value loss 3841.12456, policy loss -0.00193
+Updates 17, num timesteps 679728, FPS 528, mean/median reward -174.6/-173.2, min/max reward -336.1/-69.1, test_mean/median reward -135.6/-135.6, test_min/max reward -135.6/-135.6, entropy -2.00630, value loss 4948.45435, policy loss -0.00297
+Updates 18, num timesteps 719712, FPS 527, mean/median reward -187.0/-156.0, min/max reward -1357.7/-73.8, test_mean/median reward -144.5/-144.5, test_min/max reward -144.5/-144.5, entropy -2.03798, value loss 5452.73685, policy loss -0.00114
+Updates 19, num timesteps 759696, FPS 527, mean/median reward -166.1/-161.4, min/max reward -589.4/-52.5, test_mean/median reward -141.6/-141.6, test_min/max reward -141.6/-141.6, entropy -2.06308, value loss 4247.26121, policy loss -0.00143
+Updates 20, num timesteps 799680, FPS 527, mean/median reward -196.7/-162.8, min/max reward -1408.4/-56.0, test_mean/median reward -153.2/-153.2, test_min/max reward -153.2/-153.2, entropy -2.08685, value loss 3141.20080, policy loss -0.00371
+Updates 21, num timesteps 839664, FPS 527, mean/median reward -154.4/-156.4, min/max reward -370.6/-52.4, test_mean/median reward -126.1/-126.1, test_min/max reward -126.1/-126.1, entropy -2.11224, value loss 3244.24374, policy loss 0.00216
+Updates 22, num timesteps 879648, FPS 527, mean/median reward -156.8/-160.3, min/max reward -371.1/-46.8, test_mean/median reward -167.2/-167.2, test_min/max reward -167.2/-167.2, entropy -2.15853, value loss 1557.92776, policy loss -0.00599
+Updates 23, num timesteps 919632, FPS 526, mean/median reward -145.4/-141.9, min/max reward -380.1/-52.5, test_mean/median reward -89.3/-89.3, test_min/max reward -89.3/-89.3, entropy -2.19686, value loss 420.23620, policy loss -0.00663
+Updates 24, num timesteps 959616, FPS 526, mean/median reward -133.4/-114.4, min/max reward -722.1/-58.8, test_mean/median reward -85.9/-85.9, test_min/max reward -85.9/-85.9, entropy -2.24156, value loss 864.34055, policy loss -0.00631
+Updates 25, num timesteps 999600, FPS 526, mean/median reward -99.0/-90.1, min/max reward -189.7/-55.1, test_mean/median reward -70.7/-70.7, test_min/max reward -70.7/-70.7, entropy -2.24848, value loss 1898.05784, policy loss -0.00374
+Updates 26, num timesteps 1039584, FPS 525, mean/median reward -101.1/-85.2, min/max reward -314.2/-50.0, test_mean/median reward -58.4/-58.4, test_min/max reward -58.4/-58.4, entropy -2.28257, value loss 432.56926, policy loss -0.00592
+Updates 27, num timesteps 1079568, FPS 525, mean/median reward -90.3/-79.4, min/max reward -280.5/-47.7, test_mean/median reward -49.2/-49.2, test_min/max reward -49.2/-49.2, entropy -2.36643, value loss 113.02715, policy loss -0.00939
+Updates 28, num timesteps 1119552, FPS 525, mean/median reward -75.5/-68.9, min/max reward -192.8/-44.5, test_mean/median reward -57.2/-57.2, test_min/max reward -57.2/-57.2, entropy -2.40753, value loss 314.02460, policy loss -0.00900
+Updates 29, num timesteps 1159536, FPS 524, mean/median reward -72.7/-68.8, min/max reward -184.8/-43.4, test_mean/median reward -60.2/-60.2, test_min/max reward -60.2/-60.2, entropy -2.44288, value loss 1720.12854, policy loss -0.00203
+Updates 30, num timesteps 1199520, FPS 524, mean/median reward -79.6/-67.3, min/max reward -285.0/-45.2, test_mean/median reward -61.0/-61.0, test_min/max reward -61.0/-61.0, entropy -2.51469, value loss 55.44737, policy loss -0.00927
+Updates 31, num timesteps 1239504, FPS 524, mean/median reward -69.2/-63.6, min/max reward -179.9/-50.6, test_mean/median reward -55.6/-55.6, test_min/max reward -55.6/-55.6, entropy -2.54089, value loss 310.55998, policy loss -0.00624
+Updates 32, num timesteps 1279488, FPS 523, mean/median reward -63.8/-60.6, min/max reward -140.5/-44.7, test_mean/median reward -52.4/-52.4, test_min/max reward -52.4/-52.4, entropy -2.65302, value loss 15.91583, policy loss -0.00544
+Updates 33, num timesteps 1319472, FPS 523, mean/median reward -62.9/-60.7, min/max reward -109.8/-38.7, test_mean/median reward -51.4/-51.4, test_min/max reward -51.4/-51.4, entropy -2.75304, value loss 14.86713, policy loss -0.01456
+Updates 34, num timesteps 1359456, FPS 522, mean/median reward -59.9/-57.3, min/max reward -136.1/-43.4, test_mean/median reward -55.0/-55.0, test_min/max reward -55.0/-55.0, entropy -2.88772, value loss 11.59361, policy loss -0.01503
+Updates 35, num timesteps 1399440, FPS 522, mean/median reward -57.7/-57.1, min/max reward -86.7/-44.6, test_mean/median reward -47.1/-47.1, test_min/max reward -47.1/-47.1, entropy -3.01585, value loss 9.64884, policy loss -0.01424
+Updates 36, num timesteps 1439424, FPS 522, mean/median reward -57.6/-56.6, min/max reward -79.1/-40.3, test_mean/median reward -39.1/-39.1, test_min/max reward -39.1/-39.1, entropy -3.13853, value loss 7.67427, policy loss -0.01309
+Updates 37, num timesteps 1479408, FPS 522, mean/median reward -56.2/-54.4, min/max reward -178.5/-42.4, test_mean/median reward -36.3/-36.3, test_min/max reward -36.3/-36.3, entropy -3.19909, value loss 22.25317, policy loss -0.00898
+Updates 38, num timesteps 1519392, FPS 522, mean/median reward -53.2/-51.7, min/max reward -78.5/-34.1, test_mean/median reward -27.9/-27.9, test_min/max reward -27.9/-27.9, entropy -3.35731, value loss 6.20143, policy loss -0.01298
+Updates 39, num timesteps 1559376, FPS 521, mean/median reward -49.6/-48.4, min/max reward -72.2/-35.1, test_mean/median reward -25.0/-25.0, test_min/max reward -25.0/-25.0, entropy -3.48997, value loss 5.71681, policy loss -0.01476
+Updates 40, num timesteps 1599360, FPS 521, mean/median reward -51.3/-47.2, min/max reward -117.1/-39.9, test_mean/median reward -31.2/-31.2, test_min/max reward -31.2/-31.2, entropy -3.63037, value loss 5.31756, policy loss -0.01683
+Updates 41, num timesteps 1639344, FPS 521, mean/median reward -49.4/-47.6, min/max reward -79.3/-36.8, test_mean/median reward -32.4/-32.4, test_min/max reward -32.4/-32.4, entropy -3.74627, value loss 5.36864, policy loss -0.02015
+Updates 42, num timesteps 1679328, FPS 521, mean/median reward -48.4/-45.7, min/max reward -103.6/-36.7, test_mean/median reward -29.4/-29.4, test_min/max reward -29.4/-29.4, entropy -3.87162, value loss 4.04700, policy loss -0.01641
+Updates 43, num timesteps 1719312, FPS 521, mean/median reward -47.5/-46.4, min/max reward -62.2/-34.8, test_mean/median reward -29.7/-29.7, test_min/max reward -29.7/-29.7, entropy -4.00752, value loss 3.74715, policy loss -0.01942
+Updates 44, num timesteps 1759296, FPS 520, mean/median reward -44.1/-43.4, min/max reward -58.4/-33.2, test_mean/median reward -30.9/-30.9, test_min/max reward -30.9/-30.9, entropy -4.13780, value loss 3.58927, policy loss -0.02081
+Updates 45, num timesteps 1799280, FPS 520, mean/median reward -45.4/-41.3, min/max reward -139.5/-31.9, test_mean/median reward -31.8/-31.8, test_min/max reward -31.8/-31.8, entropy -4.28419, value loss 3.97761, policy loss -0.02033
+Updates 46, num timesteps 1839264, FPS 520, mean/median reward -41.0/-39.5, min/max reward -60.2/-31.0, test_mean/median reward -29.4/-29.4, test_min/max reward -29.4/-29.4, entropy -4.42925, value loss 3.27104, policy loss -0.02068
+Updates 47, num timesteps 1879248, FPS 520, mean/median reward -40.2/-40.3, min/max reward -50.4/-30.0, test_mean/median reward -28.8/-28.8, test_min/max reward -28.8/-28.8, entropy -4.54699, value loss 3.08829, policy loss -0.02126
+Updates 48, num timesteps 1919232, FPS 519, mean/median reward -38.6/-38.4, min/max reward -53.9/-27.7, test_mean/median reward -31.8/-31.8, test_min/max reward -31.8/-31.8, entropy -4.67373, value loss 3.19431, policy loss -0.02270
+Updates 49, num timesteps 1959216, FPS 519, mean/median reward -38.4/-38.3, min/max reward -51.1/-28.2, test_mean/median reward -29.0/-29.0, test_min/max reward -29.0/-29.0, entropy -4.81392, value loss 2.69703, policy loss -0.01671
+Updates 50, num timesteps 1999200, FPS 520, mean/median reward -37.0/-36.2, min/max reward -50.5/-27.6, test_mean/median reward -25.2/-25.2, test_min/max reward -25.2/-25.2, entropy -4.94856, value loss 2.94617, policy loss -0.01804
+Updates 51, num timesteps 2039184, FPS 521, mean/median reward -37.3/-37.2, min/max reward -52.7/-28.9, test_mean/median reward -27.0/-27.0, test_min/max reward -27.0/-27.0, entropy -5.04917, value loss 2.57876, policy loss -0.01881
+Updates 52, num timesteps 2079168, FPS 522, mean/median reward -35.7/-35.1, min/max reward -49.9/-25.8, test_mean/median reward -30.7/-30.7, test_min/max reward -30.7/-30.7, entropy -5.15840, value loss 2.15831, policy loss -0.01314
+Updates 53, num timesteps 2119152, FPS 524, mean/median reward -35.1/-35.0, min/max reward -52.8/-27.9, test_mean/median reward -31.1/-31.1, test_min/max reward -31.1/-31.1, entropy -5.25643, value loss 2.26308, policy loss -0.02313
+Updates 54, num timesteps 2159136, FPS 525, mean/median reward -34.1/-34.6, min/max reward -42.6/-25.6, test_mean/median reward -30.6/-30.6, test_min/max reward -30.6/-30.6, entropy -5.37691, value loss 2.23290, policy loss -0.02084
+Updates 55, num timesteps 2199120, FPS 526, mean/median reward -34.0/-33.8, min/max reward -45.2/-23.0, test_mean/median reward -30.4/-30.4, test_min/max reward -30.4/-30.4, entropy -5.49977, value loss 2.25703, policy loss -0.01711
+Updates 56, num timesteps 2239104, FPS 527, mean/median reward -33.2/-32.3, min/max reward -48.2/-20.2, test_mean/median reward -24.1/-24.1, test_min/max reward -24.1/-24.1, entropy -5.62055, value loss 1.98104, policy loss -0.02391
+Updates 57, num timesteps 2279088, FPS 528, mean/median reward -31.8/-31.4, min/max reward -50.7/-24.3, test_mean/median reward -27.4/-27.4, test_min/max reward -27.4/-27.4, entropy -5.73575, value loss 1.76848, policy loss -0.01721
+Updates 58, num timesteps 2319072, FPS 529, mean/median reward -30.5/-30.5, min/max reward -41.1/-21.4, test_mean/median reward -24.7/-24.7, test_min/max reward -24.7/-24.7, entropy -5.84028, value loss 2.13125, policy loss -0.02296
+Updates 59, num timesteps 2359056, FPS 531, mean/median reward -31.4/-30.8, min/max reward -49.8/-23.5, test_mean/median reward -22.0/-22.0, test_min/max reward -22.0/-22.0, entropy -5.96034, value loss 1.82525, policy loss -0.02255
+Updates 60, num timesteps 2399040, FPS 532, mean/median reward -30.7/-30.2, min/max reward -43.7/-19.7, test_mean/median reward -22.8/-22.8, test_min/max reward -22.8/-22.8, entropy -6.07610, value loss 2.22474, policy loss -0.02335
+Updates 61, num timesteps 2439024, FPS 532, mean/median reward -28.9/-29.0, min/max reward -46.3/-19.9, test_mean/median reward -22.8/-22.8, test_min/max reward -22.8/-22.8, entropy -6.20706, value loss 1.82468, policy loss -0.02540
+Updates 62, num timesteps 2479008, FPS 534, mean/median reward -30.4/-27.8, min/max reward -127.2/-19.5, test_mean/median reward -21.3/-21.3, test_min/max reward -21.3/-21.3, entropy -6.32387, value loss 2.06484, policy loss -0.02432
+Updates 63, num timesteps 2518992, FPS 535, mean/median reward -26.9/-26.7, min/max reward -38.2/-17.7, test_mean/median reward -19.4/-19.4, test_min/max reward -19.4/-19.4, entropy -6.46647, value loss 1.78493, policy loss -0.02397
+Updates 64, num timesteps 2558976, FPS 536, mean/median reward -27.2/-26.8, min/max reward -50.8/-17.5, test_mean/median reward -19.8/-19.8, test_min/max reward -19.8/-19.8, entropy -6.58226, value loss 2.18953, policy loss -0.03087
+Updates 65, num timesteps 2598960, FPS 537, mean/median reward -27.4/-26.9, min/max reward -51.5/-20.3, test_mean/median reward -17.1/-17.1, test_min/max reward -17.1/-17.1, entropy -6.70198, value loss 2.07657, policy loss -0.02453
+Updates 66, num timesteps 2638944, FPS 537, mean/median reward -26.5/-25.6, min/max reward -45.4/-17.1, test_mean/median reward -18.2/-18.2, test_min/max reward -18.2/-18.2, entropy -6.83084, value loss 1.66821, policy loss -0.02394
+Updates 67, num timesteps 2678928, FPS 538, mean/median reward -25.3/-24.5, min/max reward -54.2/-13.3, test_mean/median reward -14.5/-14.5, test_min/max reward -14.5/-14.5, entropy -6.95656, value loss 1.66814, policy loss -0.02958
+Updates 68, num timesteps 2718912, FPS 539, mean/median reward -154.7/-24.3, min/max reward -7305.0/-14.5, test_mean/median reward -10.1/-10.1, test_min/max reward -10.1/-10.1, entropy -6.99762, value loss 325.18145, policy loss -0.00395
+Updates 69, num timesteps 2758896, FPS 540, mean/median reward -23.8/-24.2, min/max reward -34.7/-14.5, test_mean/median reward -12.0/-12.0, test_min/max reward -12.0/-12.0, entropy -7.05829, value loss 2.40907, policy loss -0.02112
+Updates 70, num timesteps 2798880, FPS 541, mean/median reward -22.7/-22.5, min/max reward -32.5/-15.8, test_mean/median reward -8.1/-8.1, test_min/max reward -8.1/-8.1, entropy -7.15871, value loss 1.74207, policy loss -0.02619
+Updates 71, num timesteps 2838864, FPS 542, mean/median reward -22.9/-23.1, min/max reward -31.0/-14.1, test_mean/median reward -8.1/-8.1, test_min/max reward -8.1/-8.1, entropy -7.27953, value loss 1.64512, policy loss -0.02218
+Updates 72, num timesteps 2878848, FPS 542, mean/median reward -21.4/-21.9, min/max reward -31.6/-12.8, test_mean/median reward -10.6/-10.6, test_min/max reward -10.6/-10.6, entropy -7.38220, value loss 1.48160, policy loss -0.02867
+Updates 73, num timesteps 2918832, FPS 543, mean/median reward -21.1/-21.0, min/max reward -32.1/-12.9, test_mean/median reward -8.9/-8.9, test_min/max reward -8.9/-8.9, entropy -7.48558, value loss 1.44250, policy loss -0.02528
+Updates 74, num timesteps 2958816, FPS 544, mean/median reward -20.7/-21.2, min/max reward -30.6/-11.1, test_mean/median reward -7.0/-7.0, test_min/max reward -7.0/-7.0, entropy -7.58494, value loss 1.56006, policy loss -0.03011
+Updates 75, num timesteps 2998800, FPS 544, mean/median reward -19.4/-19.5, min/max reward -27.8/-9.3, test_mean/median reward -6.1/-6.1, test_min/max reward -6.1/-6.1, entropy -7.69826, value loss 1.53334, policy loss -0.03368
+Updates 76, num timesteps 3038784, FPS 545, mean/median reward -19.1/-19.0, min/max reward -32.3/-4.8, test_mean/median reward -5.9/-5.9, test_min/max reward -5.9/-5.9, entropy -7.78446, value loss 3.83641, policy loss -0.01843
+Updates 77, num timesteps 3078768, FPS 546, mean/median reward -16.9/-16.9, min/max reward -26.7/-9.0, test_mean/median reward -5.9/-5.9, test_min/max reward -5.9/-5.9, entropy -7.89191, value loss 1.64026, policy loss -0.02495
+Updates 78, num timesteps 3118752, FPS 546, mean/median reward -18.1/-17.5, min/max reward -36.0/-6.5, test_mean/median reward -5.4/-5.4, test_min/max reward -5.4/-5.4, entropy -7.99761, value loss 1.77881, policy loss -0.02377
+Updates 79, num timesteps 3158736, FPS 547, mean/median reward -15.7/-15.3, min/max reward -24.8/-6.4, test_mean/median reward -2.5/-2.5, test_min/max reward -2.5/-2.5, entropy -8.10180, value loss 1.63734, policy loss -0.02636
+Updates 80, num timesteps 3198720, FPS 548, mean/median reward -14.8/-14.8, min/max reward -27.3/-4.5, test_mean/median reward -2.9/-2.9, test_min/max reward -2.9/-2.9, entropy -8.20854, value loss 1.82294, policy loss -0.02516
+Updates 81, num timesteps 3238704, FPS 548, mean/median reward -13.7/-14.0, min/max reward -24.8/-7.3, test_mean/median reward -5.3/-5.3, test_min/max reward -5.3/-5.3, entropy -8.31948, value loss 1.57722, policy loss -0.02114
+Updates 82, num timesteps 3278688, FPS 549, mean/median reward -13.7/-14.3, min/max reward -26.4/-2.5, test_mean/median reward 0.7/0.7, test_min/max reward 0.7/0.7, entropy -8.42482, value loss 1.58545, policy loss -0.03143
+Updates 83, num timesteps 3318672, FPS 549, mean/median reward -11.9/-11.7, min/max reward -23.5/-1.1, test_mean/median reward -2.3/-2.3, test_min/max reward -2.3/-2.3, entropy -8.52983, value loss 1.56313, policy loss -0.02841
+Updates 84, num timesteps 3358656, FPS 550, mean/median reward -12.6/-12.2, min/max reward -24.4/-3.0, test_mean/median reward -1.1/-1.1, test_min/max reward -1.1/-1.1, entropy -8.62673, value loss 1.51652, policy loss -0.02600
+Updates 85, num timesteps 3398640, FPS 551, mean/median reward -13.6/-12.9, min/max reward -31.2/0.2, test_mean/median reward 0.7/0.7, test_min/max reward 0.7/0.7, entropy -8.73684, value loss 1.63273, policy loss -0.02861
+Updates 86, num timesteps 3438624, FPS 551, mean/median reward -11.5/-12.1, min/max reward -23.6/-1.1, test_mean/median reward -1.1/-1.1, test_min/max reward -1.1/-1.1, entropy -8.83847, value loss 2.11486, policy loss -0.02606
+Updates 87, num timesteps 3478608, FPS 552, mean/median reward -9.5/-8.8, min/max reward -18.2/-0.3, test_mean/median reward -3.5/-3.5, test_min/max reward -3.5/-3.5, entropy -8.92012, value loss 1.58311, policy loss -0.02369
+Updates 88, num timesteps 3518592, FPS 552, mean/median reward -10.2/-9.3, min/max reward -20.2/-3.6, test_mean/median reward -2.0/-2.0, test_min/max reward -2.0/-2.0, entropy -9.01259, value loss 1.60366, policy loss -0.02390
+Updates 89, num timesteps 3558576, FPS 553, mean/median reward -8.7/-9.1, min/max reward -22.4/2.4, test_mean/median reward 3.8/3.8, test_min/max reward 3.8/3.8, entropy -9.10829, value loss 1.90565, policy loss -0.02532
+Updates 90, num timesteps 3598560, FPS 554, mean/median reward -7.4/-7.3, min/max reward -17.6/3.2, test_mean/median reward 4.0/4.0, test_min/max reward 4.0/4.0, entropy -9.22601, value loss 1.53842, policy loss -0.02589
+Updates 91, num timesteps 3638544, FPS 554, mean/median reward -6.8/-6.6, min/max reward -15.7/1.8, test_mean/median reward 2.2/2.2, test_min/max reward 2.2/2.2, entropy -9.32752, value loss 1.67897, policy loss -0.02741
+Updates 92, num timesteps 3678528, FPS 554, mean/median reward -6.7/-6.3, min/max reward -21.3/1.1, test_mean/median reward 3.8/3.8, test_min/max reward 3.8/3.8, entropy -9.42841, value loss 1.71725, policy loss -0.02316
+Updates 93, num timesteps 3718512, FPS 555, mean/median reward -4.5/-4.2, min/max reward -17.7/2.2, test_mean/median reward 5.2/5.2, test_min/max reward 5.2/5.2, entropy -9.51572, value loss 1.54080, policy loss -0.02468
+Updates 94, num timesteps 3758496, FPS 555, mean/median reward -3.6/-3.8, min/max reward -12.0/5.1, test_mean/median reward 9.8/9.8, test_min/max reward 9.8/9.8, entropy -9.60381, value loss 1.40866, policy loss -0.02470
+Updates 95, num timesteps 3798480, FPS 556, mean/median reward -4.4/-3.5, min/max reward -14.9/3.7, test_mean/median reward 5.9/5.9, test_min/max reward 5.9/5.9, entropy -9.69503, value loss 1.44394, policy loss -0.02768
+Updates 96, num timesteps 3838464, FPS 556, mean/median reward -2.6/-2.0, min/max reward -10.8/3.0, test_mean/median reward 5.2/5.2, test_min/max reward 5.2/5.2, entropy -9.77674, value loss 1.47073, policy loss -0.02040
+Updates 97, num timesteps 3878448, FPS 557, mean/median reward -3.3/-3.2, min/max reward -20.4/6.3, test_mean/median reward 11.7/11.7, test_min/max reward 11.7/11.7, entropy -9.86115, value loss 1.40198, policy loss -0.02097
+Updates 98, num timesteps 3918432, FPS 557, mean/median reward -3.4/-3.2, min/max reward -17.5/5.3, test_mean/median reward 13.0/13.0, test_min/max reward 13.0/13.0, entropy -9.94930, value loss 1.39362, policy loss -0.02588
+Updates 99, num timesteps 3958416, FPS 558, mean/median reward -0.9/-0.5, min/max reward -11.1/6.9, test_mean/median reward 14.4/14.4, test_min/max reward 14.4/14.4, entropy -10.03753, value loss 1.60785, policy loss -0.02778
+Updates 100, num timesteps 3998400, FPS 558, mean/median reward -1.3/-0.9, min/max reward -11.3/6.6, test_mean/median reward 13.8/13.8, test_min/max reward 13.8/13.8, entropy -10.12333, value loss 1.65835, policy loss -0.02673
+Updates 101, num timesteps 4038384, FPS 559, mean/median reward -1.2/-0.6, min/max reward -12.4/7.9, test_mean/median reward 18.0/18.0, test_min/max reward 18.0/18.0, entropy -10.21526, value loss 1.52390, policy loss -0.02242
+Updates 102, num timesteps 4078368, FPS 559, mean/median reward 0.7/1.1, min/max reward -9.4/10.5, test_mean/median reward 17.8/17.8, test_min/max reward 17.8/17.8, entropy -10.31198, value loss 1.83908, policy loss -0.02791
+Updates 103, num timesteps 4118352, FPS 559, mean/median reward 0.9/1.7, min/max reward -9.7/12.2, test_mean/median reward 16.8/16.8, test_min/max reward 16.8/16.8, entropy -10.41214, value loss 1.35649, policy loss -0.02646
+Updates 104, num timesteps 4158336, FPS 560, mean/median reward 2.0/2.1, min/max reward -11.6/11.1, test_mean/median reward 14.6/14.6, test_min/max reward 14.6/14.6, entropy -10.51612, value loss 1.50587, policy loss -0.02344
+Updates 105, num timesteps 4198320, FPS 560, mean/median reward 3.4/3.6, min/max reward -5.0/9.5, test_mean/median reward 19.2/19.2, test_min/max reward 19.2/19.2, entropy -10.61288, value loss 1.51103, policy loss -0.03447
+Updates 106, num timesteps 4238304, FPS 560, mean/median reward 2.7/3.7, min/max reward -11.7/8.4, test_mean/median reward 22.1/22.1, test_min/max reward 22.1/22.1, entropy -10.71010, value loss 1.38012, policy loss -0.02504
+Updates 107, num timesteps 4278288, FPS 561, mean/median reward 3.6/3.9, min/max reward -6.9/13.9, test_mean/median reward 19.2/19.2, test_min/max reward 19.2/19.2, entropy -10.80312, value loss 1.59051, policy loss -0.02146
+Updates 108, num timesteps 4318272, FPS 561, mean/median reward 4.7/5.2, min/max reward -9.9/11.9, test_mean/median reward 21.2/21.2, test_min/max reward 21.2/21.2, entropy -10.91905, value loss 1.43930, policy loss -0.02916
+Updates 109, num timesteps 4358256, FPS 562, mean/median reward 5.0/4.8, min/max reward -10.8/15.3, test_mean/median reward 21.4/21.4, test_min/max reward 21.4/21.4, entropy -11.01104, value loss 1.47233, policy loss -0.01775
+Updates 110, num timesteps 4398240, FPS 562, mean/median reward 5.8/6.2, min/max reward -6.4/16.8, test_mean/median reward 18.6/18.6, test_min/max reward 18.6/18.6, entropy -11.09260, value loss 1.64922, policy loss -0.02408
+Updates 111, num timesteps 4438224, FPS 562, mean/median reward 5.5/5.4, min/max reward -6.2/15.0, test_mean/median reward 25.4/25.4, test_min/max reward 25.4/25.4, entropy -11.18942, value loss 1.43839, policy loss -0.02065
+Updates 112, num timesteps 4478208, FPS 563, mean/median reward 6.3/5.9, min/max reward -4.3/14.9, test_mean/median reward 22.9/22.9, test_min/max reward 22.9/22.9, entropy -11.28604, value loss 1.36353, policy loss -0.02253
+Updates 113, num timesteps 4518192, FPS 563, mean/median reward 7.6/7.8, min/max reward -10.8/17.8, test_mean/median reward 25.4/25.4, test_min/max reward 25.4/25.4, entropy -11.37548, value loss 1.42023, policy loss -0.02865
+Updates 114, num timesteps 4558176, FPS 563, mean/median reward 8.2/7.6, min/max reward 0.3/16.6, test_mean/median reward 24.4/24.4, test_min/max reward 24.4/24.4, entropy -11.45551, value loss 1.29780, policy loss -0.02373
+Updates 115, num timesteps 4598160, FPS 564, mean/median reward 8.6/9.2, min/max reward -4.6/17.2, test_mean/median reward 27.0/27.0, test_min/max reward 27.0/27.0, entropy -11.53803, value loss 1.42583, policy loss -0.02731
+Updates 116, num timesteps 4638144, FPS 564, mean/median reward 7.8/8.2, min/max reward -4.0/17.0, test_mean/median reward 24.5/24.5, test_min/max reward 24.5/24.5, entropy -11.62281, value loss 1.61309, policy loss -0.03047
+Updates 117, num timesteps 4678128, FPS 564, mean/median reward 9.6/9.3, min/max reward -0.6/21.3, test_mean/median reward 25.5/25.5, test_min/max reward 25.5/25.5, entropy -11.70727, value loss 1.51108, policy loss -0.01995
+Updates 118, num timesteps 4718112, FPS 565, mean/median reward 9.9/10.1, min/max reward -2.5/18.2, test_mean/median reward 23.0/23.0, test_min/max reward 23.0/23.0, entropy -11.78872, value loss 1.52342, policy loss -0.01960
+Updates 119, num timesteps 4758096, FPS 565, mean/median reward 8.9/9.9, min/max reward -13.1/18.0, test_mean/median reward 23.4/23.4, test_min/max reward 23.4/23.4, entropy -11.85939, value loss 1.42422, policy loss -0.01912
+Updates 120, num timesteps 4798080, FPS 565, mean/median reward 11.1/12.2, min/max reward -1.1/17.7, test_mean/median reward 26.6/26.6, test_min/max reward 26.6/26.6, entropy -11.93745, value loss 1.46309, policy loss -0.02818
+Updates 121, num timesteps 4838064, FPS 566, mean/median reward 11.6/11.9, min/max reward 3.1/19.2, test_mean/median reward 26.3/26.3, test_min/max reward 26.3/26.3, entropy -12.02669, value loss 1.41718, policy loss -0.02056
+Updates 122, num timesteps 4878048, FPS 566, mean/median reward 11.9/12.3, min/max reward -2.5/22.2, test_mean/median reward 27.8/27.8, test_min/max reward 27.8/27.8, entropy -12.12316, value loss 1.43001, policy loss -0.02890
+Updates 123, num timesteps 4918032, FPS 566, mean/median reward 13.5/13.8, min/max reward 1.6/22.3, test_mean/median reward 30.0/30.0, test_min/max reward 30.0/30.0, entropy -12.21069, value loss 1.32354, policy loss -0.01667
+Updates 124, num timesteps 4958016, FPS 566, mean/median reward 13.6/14.0, min/max reward -15.4/22.1, test_mean/median reward 29.3/29.3, test_min/max reward 29.3/29.3, entropy -12.30156, value loss 1.39187, policy loss -0.02099
+Updates 125, num timesteps 4998000, FPS 567, mean/median reward 14.7/14.8, min/max reward 1.1/22.6, test_mean/median reward 29.2/29.2, test_min/max reward 29.2/29.2, entropy -12.39839, value loss 1.51036, policy loss -0.01982
+Updates 126, num timesteps 5037984, FPS 567, mean/median reward 15.9/15.6, min/max reward 6.1/24.3, test_mean/median reward 30.2/30.2, test_min/max reward 30.2/30.2, entropy -12.48227, value loss 1.30553, policy loss -0.02354
+Updates 127, num timesteps 5077968, FPS 567, mean/median reward 15.5/15.5, min/max reward 6.0/24.4, test_mean/median reward 30.5/30.5, test_min/max reward 30.5/30.5, entropy -12.56929, value loss 1.43856, policy loss -0.02939
+Updates 128, num timesteps 5117952, FPS 567, mean/median reward 16.1/15.7, min/max reward 3.1/28.1, test_mean/median reward 32.7/32.7, test_min/max reward 32.7/32.7, entropy -12.64818, value loss 1.44003, policy loss -0.02195
+Updates 129, num timesteps 5157936, FPS 568, mean/median reward 16.2/16.7, min/max reward 4.7/22.2, test_mean/median reward 31.3/31.3, test_min/max reward 31.3/31.3, entropy -12.73961, value loss 1.38880, policy loss -0.02615
+Updates 130, num timesteps 5197920, FPS 568, mean/median reward 17.5/17.8, min/max reward 1.3/26.9, test_mean/median reward 33.4/33.4, test_min/max reward 33.4/33.4, entropy -12.81823, value loss 1.40237, policy loss -0.02741
+Updates 131, num timesteps 5237904, FPS 568, mean/median reward 17.6/18.2, min/max reward 1.7/25.4, test_mean/median reward 33.6/33.6, test_min/max reward 33.6/33.6, entropy -12.88824, value loss 1.49918, policy loss -0.02397
+Updates 132, num timesteps 5277888, FPS 569, mean/median reward 18.2/18.9, min/max reward 6.8/26.3, test_mean/median reward 34.1/34.1, test_min/max reward 34.1/34.1, entropy -12.95489, value loss 1.76030, policy loss -0.01870
+Updates 133, num timesteps 5317872, FPS 569, mean/median reward 18.7/18.7, min/max reward 8.8/25.6, test_mean/median reward 35.4/35.4, test_min/max reward 35.4/35.4, entropy -13.03265, value loss 1.59127, policy loss -0.02668
+Updates 134, num timesteps 5357856, FPS 569, mean/median reward 19.0/19.4, min/max reward 6.8/26.2, test_mean/median reward 34.7/34.7, test_min/max reward 34.7/34.7, entropy -13.10478, value loss 1.68687, policy loss -0.01855
+Updates 135, num timesteps 5397840, FPS 570, mean/median reward 16.4/19.2, min/max reward -149.9/29.7, test_mean/median reward 35.5/35.5, test_min/max reward 35.5/35.5, entropy -13.14814, value loss 5.56039, policy loss -0.01620
+Updates 136, num timesteps 5437824, FPS 570, mean/median reward 18.5/19.3, min/max reward -24.6/25.8, test_mean/median reward 34.0/34.0, test_min/max reward 34.0/34.0, entropy -13.20443, value loss 3.61130, policy loss -0.02518
+Updates 137, num timesteps 5477808, FPS 570, mean/median reward 20.1/21.1, min/max reward 1.0/30.4, test_mean/median reward 34.5/34.5, test_min/max reward 34.5/34.5, entropy -13.27237, value loss 2.39057, policy loss -0.01990
+Updates 138, num timesteps 5517792, FPS 570, mean/median reward 20.5/20.5, min/max reward 11.7/30.5, test_mean/median reward 33.6/33.6, test_min/max reward 33.6/33.6, entropy -13.34563, value loss 1.49629, policy loss -0.01928
+Updates 139, num timesteps 5557776, FPS 570, mean/median reward 20.5/20.9, min/max reward 4.0/31.8, test_mean/median reward 36.2/36.2, test_min/max reward 36.2/36.2, entropy -13.41007, value loss 1.71294, policy loss -0.01442
+Updates 140, num timesteps 5597760, FPS 571, mean/median reward 21.6/22.5, min/max reward 3.7/33.1, test_mean/median reward 39.0/39.0, test_min/max reward 39.0/39.0, entropy -13.47638, value loss 1.82379, policy loss -0.01334
+Updates 141, num timesteps 5637744, FPS 571, mean/median reward 21.4/22.6, min/max reward -3.2/31.3, test_mean/median reward 37.2/37.2, test_min/max reward 37.2/37.2, entropy -13.54940, value loss 2.00469, policy loss -0.01747
+Updates 142, num timesteps 5677728, FPS 571, mean/median reward 22.2/22.5, min/max reward 4.3/30.6, test_mean/median reward 36.0/36.0, test_min/max reward 36.0/36.0, entropy -13.61102, value loss 2.93309, policy loss -0.02480
+Updates 143, num timesteps 5717712, FPS 571, mean/median reward 21.7/23.2, min/max reward -0.9/31.7, test_mean/median reward 37.0/37.0, test_min/max reward 37.0/37.0, entropy -13.67418, value loss 2.62282, policy loss -0.02174
+Updates 144, num timesteps 5757696, FPS 572, mean/median reward 21.2/22.4, min/max reward -2.0/29.5, test_mean/median reward 43.1/43.1, test_min/max reward 43.1/43.1, entropy -13.73386, value loss 2.21377, policy loss -0.01725
+Updates 145, num timesteps 5797680, FPS 572, mean/median reward 22.3/23.8, min/max reward -33.2/31.1, test_mean/median reward 43.0/43.0, test_min/max reward 43.0/43.0, entropy -13.79111, value loss 2.14543, policy loss -0.02043
+Updates 146, num timesteps 5837664, FPS 572, mean/median reward 23.0/24.1, min/max reward 9.0/33.3, test_mean/median reward 42.1/42.1, test_min/max reward 42.1/42.1, entropy -13.84964, value loss 2.45427, policy loss -0.02216
+Updates 147, num timesteps 5877648, FPS 572, mean/median reward 24.2/25.5, min/max reward 14.4/34.2, test_mean/median reward 41.7/41.7, test_min/max reward 41.7/41.7, entropy -13.90488, value loss 2.32758, policy loss -0.02160
+Updates 148, num timesteps 5917632, FPS 572, mean/median reward 22.7/23.8, min/max reward -5.4/33.8, test_mean/median reward 44.2/44.2, test_min/max reward 44.2/44.2, entropy -13.96148, value loss 2.66305, policy loss -0.02325
+Updates 149, num timesteps 5957616, FPS 572, mean/median reward 23.8/23.7, min/max reward 15.8/34.7, test_mean/median reward 37.7/37.7, test_min/max reward 37.7/37.7, entropy -14.00052, value loss 3.00607, policy loss -0.01910
+Updates 150, num timesteps 5997600, FPS 573, mean/median reward 23.3/24.4, min/max reward -5.8/35.2, test_mean/median reward 37.8/37.8, test_min/max reward 37.8/37.8, entropy -14.05273, value loss 3.05353, policy loss -0.01742
+Updates 151, num timesteps 6037584, FPS 573, mean/median reward 23.7/23.9, min/max reward -2.4/35.4, test_mean/median reward 42.0/42.0, test_min/max reward 42.0/42.0, entropy -14.11160, value loss 2.43581, policy loss -0.01696
+Updates 152, num timesteps 6077568, FPS 573, mean/median reward 24.9/24.7, min/max reward 16.4/33.1, test_mean/median reward 43.2/43.2, test_min/max reward 43.2/43.2, entropy -14.16983, value loss 1.97734, policy loss -0.01827
+Updates 153, num timesteps 6117552, FPS 573, mean/median reward 26.1/25.6, min/max reward 17.5/34.4, test_mean/median reward 39.8/39.8, test_min/max reward 39.8/39.8, entropy -14.22826, value loss 2.64602, policy loss -0.01773
+Updates 154, num timesteps 6157536, FPS 573, mean/median reward 24.1/25.2, min/max reward -9.7/34.9, test_mean/median reward 39.9/39.9, test_min/max reward 39.9/39.9, entropy -14.28731, value loss 3.02797, policy loss -0.02381
+Updates 155, num timesteps 6197520, FPS 573, mean/median reward 22.8/23.1, min/max reward -10.9/33.8, test_mean/median reward 47.7/47.7, test_min/max reward 47.7/47.7, entropy -14.34477, value loss 2.90604, policy loss -0.01987
+Updates 156, num timesteps 6237504, FPS 573, mean/median reward 25.2/26.4, min/max reward 8.2/34.0, test_mean/median reward 43.6/43.6, test_min/max reward 43.6/43.6, entropy -14.39821, value loss 2.43228, policy loss -0.01533
+Updates 157, num timesteps 6277488, FPS 574, mean/median reward 26.0/26.6, min/max reward -8.7/32.9, test_mean/median reward 41.7/41.7, test_min/max reward 41.7/41.7, entropy -14.44394, value loss 2.96329, policy loss -0.02462
+Updates 158, num timesteps 6317472, FPS 574, mean/median reward 26.5/26.4, min/max reward 16.9/35.7, test_mean/median reward 44.8/44.8, test_min/max reward 44.8/44.8, entropy -14.50333, value loss 2.00382, policy loss -0.01661
+Updates 159, num timesteps 6357456, FPS 574, mean/median reward 24.7/27.4, min/max reward -86.3/34.6, test_mean/median reward 45.4/45.4, test_min/max reward 45.4/45.4, entropy -14.55859, value loss 2.60938, policy loss -0.02451
+Updates 160, num timesteps 6397440, FPS 574, mean/median reward 28.0/28.1, min/max reward 17.0/39.3, test_mean/median reward 47.2/47.2, test_min/max reward 47.2/47.2, entropy -14.60492, value loss 4.57041, policy loss -0.02316
+Updates 161, num timesteps 6437424, FPS 574, mean/median reward 28.8/29.3, min/max reward 17.5/39.3, test_mean/median reward 43.5/43.5, test_min/max reward 43.5/43.5, entropy -14.65192, value loss 2.94107, policy loss -0.01459
+Updates 162, num timesteps 6477408, FPS 574, mean/median reward 28.2/28.7, min/max reward 10.7/37.5, test_mean/median reward 38.7/38.7, test_min/max reward 38.7/38.7, entropy -14.70464, value loss 2.00506, policy loss -0.01793
+Updates 163, num timesteps 6517392, FPS 574, mean/median reward 29.0/29.6, min/max reward 14.8/36.6, test_mean/median reward 47.4/47.4, test_min/max reward 47.4/47.4, entropy -14.76534, value loss 1.71873, policy loss -0.01496
+Updates 164, num timesteps 6557376, FPS 574, mean/median reward 28.7/29.4, min/max reward 14.5/37.5, test_mean/median reward 42.5/42.5, test_min/max reward 42.5/42.5, entropy -14.80821, value loss 2.82203, policy loss -0.01937
+Updates 165, num timesteps 6597360, FPS 575, mean/median reward 29.7/30.7, min/max reward 17.2/39.3, test_mean/median reward 48.5/48.5, test_min/max reward 48.5/48.5, entropy -14.86090, value loss 2.68213, policy loss -0.02279
+Updates 166, num timesteps 6637344, FPS 575, mean/median reward 29.7/29.6, min/max reward 20.2/37.4, test_mean/median reward 46.9/46.9, test_min/max reward 46.9/46.9, entropy -14.91650, value loss 2.28986, policy loss -0.01905
+Updates 167, num timesteps 6677328, FPS 575, mean/median reward 29.7/30.0, min/max reward 16.8/37.3, test_mean/median reward 47.9/47.9, test_min/max reward 47.9/47.9, entropy -14.96594, value loss 2.89530, policy loss -0.02855
+Updates 168, num timesteps 6717312, FPS 575, mean/median reward 29.4/30.2, min/max reward -2.7/39.0, test_mean/median reward 48.2/48.2, test_min/max reward 48.2/48.2, entropy -15.02396, value loss 2.62957, policy loss -0.01752
+Updates 169, num timesteps 6757296, FPS 575, mean/median reward 31.4/31.9, min/max reward 7.7/42.4, test_mean/median reward 39.8/39.8, test_min/max reward 39.8/39.8, entropy -15.07117, value loss 1.94992, policy loss -0.02435
+Updates 170, num timesteps 6797280, FPS 575, mean/median reward 32.4/32.1, min/max reward 23.7/44.5, test_mean/median reward 51.0/51.0, test_min/max reward 51.0/51.0, entropy -15.11894, value loss 2.08253, policy loss -0.02583
+Updates 171, num timesteps 6837264, FPS 575, mean/median reward 30.6/30.5, min/max reward 17.6/43.7, test_mean/median reward 34.3/34.3, test_min/max reward 34.3/34.3, entropy -15.17339, value loss 2.34772, policy loss -0.02460
+Updates 172, num timesteps 6877248, FPS 576, mean/median reward 30.8/31.7, min/max reward -10.2/41.2, test_mean/median reward 48.2/48.2, test_min/max reward 48.2/48.2, entropy -15.22468, value loss 2.94926, policy loss -0.02331
+Updates 173, num timesteps 6917232, FPS 576, mean/median reward 31.2/31.2, min/max reward 20.1/39.8, test_mean/median reward 49.6/49.6, test_min/max reward 49.6/49.6, entropy -15.27717, value loss 3.04821, policy loss -0.02174
+Updates 174, num timesteps 6957216, FPS 576, mean/median reward 32.2/32.1, min/max reward 21.8/44.9, test_mean/median reward 46.5/46.5, test_min/max reward 46.5/46.5, entropy -15.33911, value loss 2.70464, policy loss -0.02414
+Updates 175, num timesteps 6997200, FPS 576, mean/median reward 31.8/32.3, min/max reward 16.9/42.4, test_mean/median reward 48.8/48.8, test_min/max reward 48.8/48.8, entropy -15.39267, value loss 2.25534, policy loss -0.02950
+Updates 176, num timesteps 7037184, FPS 576, mean/median reward 30.3/31.1, min/max reward 19.6/38.6, test_mean/median reward 50.9/50.9, test_min/max reward 50.9/50.9, entropy -15.44222, value loss 2.37136, policy loss -0.02699
+Updates 177, num timesteps 7077168, FPS 576, mean/median reward 33.2/33.6, min/max reward 10.8/44.6, test_mean/median reward 47.6/47.6, test_min/max reward 47.6/47.6, entropy -15.48802, value loss 1.93447, policy loss -0.02390
+Updates 178, num timesteps 7117152, FPS 576, mean/median reward 31.1/32.8, min/max reward -5.9/41.0, test_mean/median reward 26.0/26.0, test_min/max reward 26.0/26.0, entropy -15.53405, value loss 2.37058, policy loss -0.02771
+Updates 179, num timesteps 7157136, FPS 576, mean/median reward 32.2/33.2, min/max reward 5.1/44.6, test_mean/median reward 51.5/51.5, test_min/max reward 51.5/51.5, entropy -15.58446, value loss 2.34960, policy loss -0.02764
+Updates 180, num timesteps 7197120, FPS 576, mean/median reward 33.5/34.7, min/max reward 17.4/46.4, test_mean/median reward 51.9/51.9, test_min/max reward 51.9/51.9, entropy -15.63700, value loss 2.46473, policy loss -0.02982
+Updates 181, num timesteps 7237104, FPS 576, mean/median reward 34.6/34.4, min/max reward 24.9/43.2, test_mean/median reward 47.7/47.7, test_min/max reward 47.7/47.7, entropy -15.68653, value loss 2.48284, policy loss -0.02513
+Updates 182, num timesteps 7277088, FPS 576, mean/median reward 34.9/34.9, min/max reward 12.1/45.3, test_mean/median reward 51.6/51.6, test_min/max reward 51.6/51.6, entropy -15.73915, value loss 2.27809, policy loss -0.02761
+Updates 183, num timesteps 7317072, FPS 577, mean/median reward 34.8/36.1, min/max reward 10.3/44.9, test_mean/median reward 50.9/50.9, test_min/max reward 50.9/50.9, entropy -15.78851, value loss 2.09125, policy loss -0.02072
+Updates 184, num timesteps 7357056, FPS 577, mean/median reward 36.7/37.6, min/max reward 23.4/47.8, test_mean/median reward 51.2/51.2, test_min/max reward 51.2/51.2, entropy -15.84381, value loss 1.96175, policy loss -0.01178
+Updates 185, num timesteps 7397040, FPS 577, mean/median reward 36.0/36.2, min/max reward 24.2/48.5, test_mean/median reward 28.6/28.6, test_min/max reward 28.6/28.6, entropy -15.89867, value loss 2.03033, policy loss -0.02111
+Updates 186, num timesteps 7437024, FPS 577, mean/median reward 36.7/37.3, min/max reward 25.4/50.3, test_mean/median reward 52.5/52.5, test_min/max reward 52.5/52.5, entropy -15.94797, value loss 1.94684, policy loss -0.02379
+Updates 187, num timesteps 7477008, FPS 577, mean/median reward 37.2/37.9, min/max reward 25.0/44.8, test_mean/median reward 52.9/52.9, test_min/max reward 52.9/52.9, entropy -15.99712, value loss 2.27955, policy loss -0.02549
+Updates 188, num timesteps 7516992, FPS 577, mean/median reward 35.9/37.4, min/max reward 9.8/45.7, test_mean/median reward 54.9/54.9, test_min/max reward 54.9/54.9, entropy -16.03924, value loss 2.75454, policy loss -0.02527
+Updates 189, num timesteps 7556976, FPS 577, mean/median reward 38.1/38.4, min/max reward 27.2/46.9, test_mean/median reward 54.5/54.5, test_min/max reward 54.5/54.5, entropy -16.08381, value loss 2.41854, policy loss -0.03247
+Updates 190, num timesteps 7596960, FPS 577, mean/median reward 38.5/38.8, min/max reward 24.6/49.0, test_mean/median reward 50.9/50.9, test_min/max reward 50.9/50.9, entropy -16.12637, value loss 1.90828, policy loss -0.02415
+Updates 191, num timesteps 7636944, FPS 577, mean/median reward 39.2/40.0, min/max reward 19.8/48.1, test_mean/median reward 44.7/44.7, test_min/max reward 44.7/44.7, entropy -16.16873, value loss 2.02948, policy loss -0.02836
