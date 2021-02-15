@@ -98,7 +98,7 @@ class Walker3DCustomEnv(EnvBase):
         if self.is_render:
             self._handle_keyboard()
             self.camera.track(pos=self.robot.body_xyz)
-            self.target.set_position(pos=self.walk_target)
+            self.target.set_position(pos=c)
             if self.distance_to_target < 0.15:
                 self.target.set_color(Colors["dodgerblue"])
             else:
@@ -512,7 +512,7 @@ class Walker3DStepperEnv(EnvBase):
         self.lookahead = 2
         self.next_step_index = 0
 
-        self.max_step_length = 0.7
+        self.max_step_length = 0.4
         self.p_xyz = [self.max_step_length, 0.0, 0.0]
 
         # self.base_phi = DEG2RAD * np.array(
@@ -896,8 +896,8 @@ class Walker3DStepperEnv(EnvBase):
         self.done = False
         self.target_reached_count = 0
 
-        self.max_step_length = 0.7
         self.p_xyz = np.array([self.max_step_length, 0.0, 0.0])
+        self.walk_target = self.p_xyz + np.array([0,0,1])
 
         # self._p.restoreState(self.state_id)
 
@@ -930,7 +930,7 @@ class Walker3DStepperEnv(EnvBase):
         if self.is_render:
             self.camera.lookat(self.robot.body_xyz)
 
-        self.targets = self.delta_to_k_targets(k=self.lookahead)
+        # self.targets = self.delta_to_k_targets(k=self.lookahead)
         # Order is important because walk_target is set up above
         self.calc_potential()
         self.terrain_map = self.get_terrain_map()
@@ -1024,6 +1024,8 @@ class Walker3DStepperEnv(EnvBase):
 
     def calc_potential(self):
 
+        self.walk_target = self.p_xyz + np.array([0,0,1.])
+
         walk_target_theta = np.arctan2(
             self.walk_target[1] - self.robot.body_xyz[1],
             self.walk_target[0] - self.robot.body_xyz[0],
@@ -1109,7 +1111,7 @@ class Walker3DStepperEnv(EnvBase):
 
             # if target_cover_id & contact_ids:
             #     self.target_reached = True
-            if contact_ids and ((delta[0] ** 2 + delta[1] ** 2 + delta[2] ** 2) < 0.3):
+            if contact_ids and ((delta[0] ** 2 + delta[1] ** 2 + delta[2] ** 2) < 0.05):
                 self.target_reached = True
                 self.p_xyz += np.array([self.max_step_length, 0.0, 0.0])
 
@@ -1152,7 +1154,7 @@ class Walker3DStepperEnv(EnvBase):
         self.calc_base_reward(action)
         self.calc_step_reward()
         # use next step to calculate next k steps
-        self.targets = self.delta_to_k_targets(k=self.lookahead)
+        # self.targets = self.delta_to_k_targets(k=self.lookahead)
 
         self.terrain_map = self.get_terrain_map()
 
@@ -1165,21 +1167,21 @@ class Walker3DStepperEnv(EnvBase):
                 (targets, np.repeat(targets[[-1]], k - len(targets), axis=0))
             )
 
-        self.walk_target = [7.0, 0.0, 1.32] #targets[[1], 0:3].mean(axis=0)
+        self.walk_target = np.array(self.p_xyz) + np.array([0.0, 0.0, 1.32]) #targets[[1], 0:3].mean(axis=0)
 
-        deltas = targets[:, 0:3] - self.robot.body_xyz
-        target_thetas = np.arctan2(deltas[:, 1], deltas[:, 0])
+        deltas = self.walk_target - self.robot.body_xyz
+        target_thetas = np.array([0.,0.,0.])
 
         angle_to_targets = target_thetas - self.robot.body_rpy[2]
-        distance_to_targets = np.linalg.norm(deltas[:, 0:2], ord=2, axis=1)
+        distance_to_targets = np.linalg.norm(deltas)
 
         deltas = np.stack(
             (
                 np.sin(angle_to_targets) * distance_to_targets,  # x
                 np.cos(angle_to_targets) * distance_to_targets,  # y
-                deltas[:, 2],  # z
-                targets[:, 4],  # x_tilt
-                targets[:, 5],  # y_tilt
+                deltas,  # z
+                0,
+                0
             ),
             axis=1,
         )
@@ -1203,7 +1205,7 @@ class Walker3DStepperEnv(EnvBase):
         phi, x_tilt, y_tilt = self.terrain_info[bound_checked_index, 3:6]
         quaternion = self._p.getQuaternionFromEuler([x_tilt, y_tilt, phi])
         self.steps[body_index].set_position(pos=pos, quat=quaternion)
-        self.targets = self.delta_to_k_targets(k=self.lookahead)
+        # self.targets = self.delta_to_k_targets(k=self.lookahead)
 
         self.terrain_map = self.get_terrain_map()
 
