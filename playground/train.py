@@ -57,7 +57,7 @@ def configs():
 
     # Sampling parameters
     episode_steps = 40000
-    num_processes = multiprocessing.cpu_count()
+    num_processes = 2*multiprocessing.cpu_count()
     num_steps = episode_steps // num_processes
     mini_batch_size = 1024
     num_mini_batch = episode_steps // mini_batch_size
