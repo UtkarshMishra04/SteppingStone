@@ -1024,7 +1024,7 @@ class Walker3DStepperEnv(EnvBase):
 
     def calc_potential(self):
 
-        self.walk_target = self.p_xyz + np.array([0,0,1.])
+        self.walk_target = self.p_xyz #+ np.array([0,0,1.])
 
         walk_target_theta = np.arctan2(
             self.walk_target[1] - self.robot.body_xyz[1],
@@ -1167,7 +1167,7 @@ class Walker3DStepperEnv(EnvBase):
                 (targets, np.repeat(targets[[-1]], k - len(targets), axis=0))
             )
 
-        self.walk_target = np.array(self.p_xyz) + np.array([0.0, 0.0, 1.32]) #targets[[1], 0:3].mean(axis=0)
+        self.walk_target = np.array(self.p_xyz) #+ np.array([0.0, 0.0, 1.32]) #targets[[1], 0:3].mean(axis=0)
 
         deltas = self.walk_target - self.robot.body_xyz
         target_thetas = np.array([0.,0.,0.])

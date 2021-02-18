@@ -1,1 +1,1 @@
-python -m playground.enjoy --env mocca_envs:Walker3DStepperEnv-v0 --net runs/2021_02_13__21_14_48__experiment1/models/mocca_envs:Walker3DStepperEnv-v0_latest.pt
+python -m playground.enjoy --env mocca_envs:Walker3DStepperEnv-v0 --net runs/2021_02_15__17_49_32__experiment2/models/mocca_envs:Walker3DStepperEnv-v0_best.pt
